@@ -62,8 +62,12 @@
     methods: {
       submit () {
         axios.post('/articles', this.formData)
-          .then(resp => {
-            window.location.replace('/')
+          .then(({ data }) => {
+            flash(data.message, data.status)
+
+            this.errors = {}
+            this.formData.title = ''
+            this.formData.body = ''
           })
           .catch(({ response }) => {
             if (response.status === 422) {
@@ -75,6 +79,6 @@
             console.log(response)
           })
       }
-    },
+    }
   }
 </script>
