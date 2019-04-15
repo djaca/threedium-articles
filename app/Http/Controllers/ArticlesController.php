@@ -39,7 +39,7 @@ class ArticlesController extends Controller
             'body'  => 'required'
         ]);
 
-        auth()->user()->articles()->create($request->only(['title', 'body']));
+        $request->user()->articles()->create($request->only(['title', 'body']));
 
         return response()->json([
             'status' => 'success',

@@ -57,8 +57,8 @@ class CreateArticleTest extends TestCase
              ]);
 
         $this->assertDatabaseHas('articles', [
-            'title' => 'New article',
-            'body'  => 'Article body',
+            'title'     => 'New article',
+            'body'      => 'Article body',
             'author_id' => $this->user->id
         ]);
     }
