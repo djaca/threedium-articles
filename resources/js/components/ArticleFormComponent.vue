@@ -28,8 +28,13 @@
 
     <div class="form-group row mb-0">
       <div class="col-md-6">
-        <button type="submit" class="btn btn-primary" @click="submit">
-          Submit
+        <button
+          type="submit"
+          class="btn btn-primary"
+          :disabled="btnDisabled"
+          @click="submit"
+          >
+            Submit
         </button>
       </div>
     </div>
@@ -45,6 +50,12 @@
           body: ''
         },
         errors: {}
+      }
+    },
+
+    computed: {
+      btnDisabled () {
+        return this.formData.title === '' || this.formData.body === ''
       }
     },
 

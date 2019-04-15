@@ -1801,6 +1801,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1810,6 +1815,11 @@ __webpack_require__.r(__webpack_exports__);
       },
       errors: {}
     };
+  },
+  computed: {
+    btnDisabled: function btnDisabled() {
+      return this.formData.title === '' || this.formData.body === '';
+    }
   },
   methods: {
     submit: function submit() {
@@ -37208,10 +37218,10 @@ var render = function() {
             "button",
             {
               staticClass: "btn btn-primary",
-              attrs: { type: "submit" },
+              attrs: { type: "submit", disabled: _vm.btnDisabled },
               on: { click: _vm.submit }
             },
-            [_vm._v("\n        Submit\n      ")]
+            [_vm._v("\n          Submit\n      ")]
           )
         ])
       ])
