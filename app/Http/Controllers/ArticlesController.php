@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Article;
 use Illuminate\Http\Request;
 
 class ArticlesController extends Controller
@@ -84,11 +85,20 @@ class ArticlesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param Article $article
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($id)
+    public function destroy(Article $article)
     {
-        //
+        $this->authorize('delete', $article);
+
+        $article->delete();
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Article deleted successfully'
+        ]);
     }
 }

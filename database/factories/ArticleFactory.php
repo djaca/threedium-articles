@@ -8,7 +8,7 @@ $factory->define(App\Article::class, function (Faker $faker) {
         'title'     => $faker->words(2, true),
         'body'      => $faker->realText(),
         'author_id' => function () {
-            factory(User::class)->create()->id;
+            return factory(User::class)->create()->id;
         }
     ];
 });
