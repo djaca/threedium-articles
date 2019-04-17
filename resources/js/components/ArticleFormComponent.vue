@@ -14,16 +14,16 @@
     </div>
 
     <div class="form-group">
-      <label for="body">Body</label>
-      <textarea
+      <vue-trix
         v-model="formData.body"
-        :class="['form-control', { 'is-invalid': errors.hasOwnProperty('body') }]"
-        id="body"
-        rows="3"
-      ></textarea>
-      <span class="invalid-feedback" v-if="errors.hasOwnProperty('body')">
-          {{ errors['body'][0] }}
-        </span>
+        placeholder="Enter content"
+      />
+      <span
+        :class="['invalid-feedback', { 'd-block': errors.hasOwnProperty('body') }]"
+        v-if="errors.hasOwnProperty('body')"
+      >
+        {{ errors['body'][0] }}
+      </span>
     </div>
 
     <div class="form-group row mb-0">
@@ -42,7 +42,13 @@
 </template>
 
 <script>
+  import VueTrix from "vue-trix"
+
   export default {
+    components: {
+      VueTrix
+    },
+
     data () {
       return {
         formData: {
@@ -55,13 +61,14 @@
 
     computed: {
       btnDisabled () {
+        return false
         return this.formData.title === '' || this.formData.body === ''
       }
     },
 
     methods: {
       submit () {
-        axios.post('/articles', this.formData)
+        axios.post('/api/articles', this.formData)
           .then(({ data }) => {
             flash(data.message, data.status)
 
@@ -82,3 +89,10 @@
     }
   }
 </script>
+
+<style>
+  .trix-content{
+    height: 350px;
+    overflow-y: auto;
+  }
+</style>
