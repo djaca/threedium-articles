@@ -15,8 +15,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::resource('articles', 'ArticlesController')->middleware('auth', ['except' => 'index']);
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+
+Route::get('articles/create', 'ArticlesController@create')->middleware('auth')->name('articles.create');
+
+// API
+Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
+    Route::post('articles', 'ArticlesController@store')->middleware('auth')->name('articles.store');
+    Route::delete('articles/{article}', 'ArticlesController@destroy')->middleware('auth')->name('articles.destroy');
+});
