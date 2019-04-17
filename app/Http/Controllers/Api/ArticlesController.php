@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Article;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,10 +16,15 @@ class ArticlesController extends Controller
      */
     public function index()
     {
-        $articles = Article::with('author')->simplePaginate(5);
+        $articles = request()->has('author')
+            ? User::findOrFail(request('author'))->articles()
+            : Article::with('author');
+
+        $articles = $articles->simplePaginate(5);
 
         return response()->json($articles);
     }
+
     /**
      * Store a newly created resource in storage.
      *

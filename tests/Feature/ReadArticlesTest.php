@@ -33,4 +33,18 @@ class ReadArticlesTest extends TestCase
         $this->get(route('articles.show', $this->article->id))
              ->assertSee($this->article->title);
     }
+
+    /** @test */
+    public function anyone_can_view_articles_filtered_by_author()
+    {
+        $anotherArticle = factory(Article::class)->create();
+
+        $this->get(route('articles.all', ['author' => $this->article->author->id]))
+             ->assertSee($this->article->title)
+             ->assertDontSee($anotherArticle->title);
+
+        $this->get(route('articles.all', ['author' => $anotherArticle->author->id]))
+             ->assertSee($anotherArticle->title)
+             ->assertDontSee($this->article->title);
+    }
 }
