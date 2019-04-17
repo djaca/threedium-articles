@@ -9,6 +9,17 @@ use App\Http\Controllers\Controller;
 class ArticlesController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $articles = Article::with('author')->simplePaginate(5);
+
+        return response()->json($articles);
+    }
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
