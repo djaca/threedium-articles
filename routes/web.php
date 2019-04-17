@@ -25,7 +25,8 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('articles/create', 'ArticlesController@create')->middleware('auth')->name('articles.create');
 
 // API
-Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
-    Route::post('articles', 'ArticlesController@store')->middleware('auth')->name('articles.store');
-    Route::delete('articles/{article}', 'ArticlesController@destroy')->middleware('auth')->name('articles.destroy');
+Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => 'auth'], function () {
+    Route::post('articles', 'ArticlesController@store')->name('articles.store');
+    Route::patch('articles/{article}', 'ArticlesController@update')->name('articles.update');
+    Route::delete('articles/{article}', 'ArticlesController@destroy')->name('articles.destroy');
 });

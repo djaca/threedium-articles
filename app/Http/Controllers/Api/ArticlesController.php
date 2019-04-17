@@ -34,12 +34,24 @@ class ArticlesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Article $article
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Article $article)
     {
-        //
+        $this->authorize('update', $article);
+
+        $request->validate([
+            'title' => 'required',
+            'body'  => 'required'
+        ]);
+
+        $article->update($request->only(['title', 'body']));
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Article updated successfully'
+        ]);
     }
 
     /**
@@ -52,7 +64,7 @@ class ArticlesController extends Controller
      */
     public function destroy(Article $article)
     {
-        $this->authorize('delete', $article);
+        $this->authorize('update', $article);
 
         $article->delete();
 
