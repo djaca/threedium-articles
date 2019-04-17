@@ -26,4 +26,11 @@ class ReadArticlesTest extends TestCase
              ->assertSee($this->article->title)
              ->assertSee($this->article->author->name);
     }
+
+    /** @test */
+    public function anyone_can_read_a_single_article()
+    {
+        $this->get(route('articles.show', $this->article->id))
+             ->assertSee($this->article->title);
+    }
 }

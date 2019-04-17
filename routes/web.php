@@ -23,6 +23,7 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 
 Route::get('articles/create', 'ArticlesController@create')->middleware('auth')->name('articles.create');
+Route::get('articles/{article}', 'ArticlesController@show')->name('articles.show');
 
 // API
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
