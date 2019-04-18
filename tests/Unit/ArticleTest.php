@@ -23,6 +23,7 @@ class ArticleTest extends TestCase
 
         $this->assertEquals('New article', $article->title);
         $this->assertEquals('Body of the article', $article->body);
+        $this->assertEquals('Body of the article', $article->excerpt);
         $this->assertInstanceOf(User::class, $article->author);
     }
 }

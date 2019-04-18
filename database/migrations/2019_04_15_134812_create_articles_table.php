@@ -17,7 +17,8 @@ class CreateArticlesTable extends Migration
             $table->bigIncrements('id');
             $table->integer('author_id')->unsigned();
             $table->string('title')->unique()->index();
-            $table->text('body');
+            $table->longText('body');
+            $table->text('excerpt');
             $table->timestamps();
         });
     }

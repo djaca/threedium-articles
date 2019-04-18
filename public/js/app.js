@@ -38573,7 +38573,7 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("div", {
-                      domProps: { innerHTML: _vm._s(article.body) }
+                      domProps: { innerHTML: _vm._s(article.excerpt) }
                     }),
                     _vm._v(" "),
                     _vm._m(0, true),

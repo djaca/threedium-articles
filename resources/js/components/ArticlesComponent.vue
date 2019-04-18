@@ -7,7 +7,7 @@
             <h1 v-text="article.title"></h1>
             <h6 v-if="article.author">by <a href="#" @click.prevent="filterBy(article.author)">{{ article.author.name }}</a></h6>
           </div>
-          <div v-html="article.body"></div>
+          <div v-html="article.excerpt"></div>
           <div>
             <span class="badge-pill badge-secondary">December 4, 2019</span>
           </div>
