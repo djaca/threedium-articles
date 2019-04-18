@@ -23,6 +23,8 @@ class CreateArticleTest extends TestCase
     public function unauthenticated_user_may_not_create_article()
     {
         $this->json('POST', route('articles.store'))->assertStatus(401);
+
+        $this->get(route('articles.create'))->assertRedirect(route('login'));
     }
 
     /** @test */

@@ -24,7 +24,7 @@ Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('articles', 'ArticlesController@index');
-Route::get('articles/create', 'ArticlesController@create')->middleware('auth')->name('articles.create');
+Route::get('articles/create', 'ArticlesController@create')->name('articles.create')->middleware('auth');
 Route::get('articles/{article}', 'ArticlesController@show')->name('articles.show');
 
 // API
