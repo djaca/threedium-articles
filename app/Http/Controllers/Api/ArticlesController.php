@@ -17,8 +17,8 @@ class ArticlesController extends Controller
     public function index()
     {
         $articles = request()->has('author')
-            ? User::findOrFail(request('author'))->articles()
-            : Article::with('author');
+            ? User::findOrFail(request('author'))->articles()->orderBy('articles.created_at', 'desc')
+            : Article::with('author')->orderBy('created_at', 'desc');
 
         $articles = $articles->simplePaginate(5);
 

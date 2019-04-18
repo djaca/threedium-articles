@@ -12,16 +12,18 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/articles');
 });
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', function () {
+    return redirect('/articles');
+})->name('home');
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-
+Route::get('articles', 'ArticlesController@index');
 Route::get('articles/create', 'ArticlesController@create')->middleware('auth')->name('articles.create');
 Route::get('articles/{article}', 'ArticlesController@show')->name('articles.show');
 
