@@ -93,3 +93,9 @@
     },
   }
 </script>
+
+<style scoped>
+  .card {
+    font-size: 1rem;
+  }
+</style>
