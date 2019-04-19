@@ -1897,6 +1897,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ArticlesComponent',
@@ -6553,7 +6558,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.card[data-v-7b57cc65] {\n  font-size: 1rem;\n}\n", ""]);
+exports.push([module.i, "\n.card[data-v-7b57cc65] {\n  font-size: 1rem;\n}\n.img[data-v-7b57cc65] {\n  height: 200px;\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center center;\n}\n", ""]);
 
 // exports
 
@@ -38567,16 +38572,33 @@ var render = function() {
                                 }
                               },
                               [_vm._v(_vm._s(article.author.name))]
+                            ),
+                            _vm._v(" on "),
+                            _c(
+                              "span",
+                              {
+                                staticClass: "badge-pill badge-light",
+                                staticStyle: { "font-size": "0.8rem" }
+                              },
+                              [_vm._v("December 4, 2019")]
                             )
                           ])
                         : _vm._e()
                     ]),
                     _vm._v(" "),
+                    article.image
+                      ? _c("div", {
+                          staticClass: "img",
+                          style: {
+                            "background-image": "url(" + article.image + ")"
+                          }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
                     _c("div", {
+                      staticClass: "my-2",
                       domProps: { innerHTML: _vm._s(article.excerpt) }
                     }),
-                    _vm._v(" "),
-                    _vm._m(0, true),
                     _vm._v(" "),
                     index !== _vm.articles.length - 1 ? _c("hr") : _vm._e()
                   ])
@@ -38638,18 +38660,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("span", { staticClass: "badge-pill badge-secondary" }, [
-        _vm._v("December 4, 2019")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

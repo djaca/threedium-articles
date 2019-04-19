@@ -5,12 +5,17 @@
         <div v-for="(article, index) in articles" :key="index">
           <div class="mb-3">
             <h1 v-text="article.title"></h1>
-            <h6 v-if="article.author">by <a href="#" @click.prevent="filterBy(article.author)">{{ article.author.name }}</a></h6>
+            <h6 v-if="article.author">by <a href="#" @click.prevent="filterBy(article.author)">{{ article.author.name }}</a> on <span class="badge-pill badge-light" style="font-size: 0.8rem">December 4, 2019</span></h6>
           </div>
-          <div v-html="article.excerpt"></div>
-          <div>
-            <span class="badge-pill badge-secondary">December 4, 2019</span>
+
+          <div
+            class="img"
+            :style="{ 'background-image': 'url(' + article.image + ')' }"
+            v-if="article.image"
+          >
           </div>
+
+          <div v-html="article.excerpt" class="my-2"></div>
 
           <hr v-if="index !== articles.length - 1">
         </div>
@@ -97,5 +102,12 @@
 <style scoped>
   .card {
     font-size: 1rem;
+  }
+
+  .img {
+    height: 200px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
 </style>
