@@ -10,6 +10,7 @@
 
           <div
             class="img"
+            @click="showArticle(article)"
             :style="{ 'background-image': 'url(' + article.image + ')' }"
             v-if="article.image"
           >
@@ -94,6 +95,10 @@
           next_page_url: data.next_page_url,
           prev_page_url: data.prev_page_url
         }
+      },
+
+      showArticle (article) {
+        window.location.href = `/articles/${article.id}`
       }
     },
   }
@@ -109,5 +114,6 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+    cursor: pointer;
   }
 </style>

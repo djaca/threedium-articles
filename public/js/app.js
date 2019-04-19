@@ -1938,6 +1938,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ArticlesComponent',
@@ -1985,6 +1986,9 @@ __webpack_require__.r(__webpack_exports__);
         next_page_url: data.next_page_url,
         prev_page_url: data.prev_page_url
       };
+    },
+    showArticle: function showArticle(article) {
+      window.location.href = "/articles/".concat(article.id);
     }
   }
 });
@@ -6594,7 +6598,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.card[data-v-7b57cc65] {\n  font-size: 1rem;\n}\n.img[data-v-7b57cc65] {\n  height: 200px;\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center center;\n}\n", ""]);
+exports.push([module.i, "\n.card[data-v-7b57cc65] {\n  font-size: 1rem;\n}\n.img[data-v-7b57cc65] {\n  height: 200px;\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center center;\n  cursor: pointer;\n}\n", ""]);
 
 // exports
 
@@ -38670,6 +38674,11 @@ var render = function() {
                           staticClass: "img",
                           style: {
                             "background-image": "url(" + article.image + ")"
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.showArticle(article)
+                            }
                           }
                         })
                       : _vm._e(),
