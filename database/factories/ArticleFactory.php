@@ -9,6 +9,11 @@ $factory->define(App\Article::class, function (Faker $faker) {
         'body'      => $faker->realText(2000),
         'author_id' => function () {
             return factory(User::class)->create()->id;
+        },
+        'image' => function () use ($faker) {
+            $img = $faker->image(storage_path('app/public/images'), 800, 400, null, false);
+
+            return 'images/' . $img;
         }
     ];
 });
