@@ -6,6 +6,7 @@ use App\Article;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Intervention\Image\Facades\Image;
 
 class ArticlesController extends Controller
 {
@@ -35,13 +36,20 @@ class ArticlesController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'body'  => 'required'
+            'body'  => 'required',
+            'image' => 'required|image'
         ]);
 
-        $request->user()->articles()->create($request->only(['title', 'body']));
+        $request->user()
+                ->articles()
+                ->create([
+                   'title' => $request->title,
+                   'body'  => $request->body,
+                   'image' => $request->file('image')->store('images', 'public')
+                ]);
 
         return response()->json([
-            'status' => 'success',
+            'status'  => 'success',
             'message' => 'Article created successfully'
         ]);
     }
