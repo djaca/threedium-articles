@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class Article extends Model
 {
-    protected $fillable = ['title', 'body'];
+    protected $fillable = ['title', 'body', 'image'];
 
     public function author()
     {
@@ -22,8 +22,14 @@ class Article extends Model
     public static function boot()
     {
         parent::boot();
+
         static::saving(function ($article) {
             $article->excerpt = Str::limit($article->body, 300);
         });
+    }
+
+    public function getImageAttribute($image)
+    {
+        return $image ? asset('storage/' . $image) : null;
     }
 }

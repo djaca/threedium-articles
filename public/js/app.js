@@ -1807,6 +1807,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1814,29 +1836,43 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      formData: {
-        title: '',
-        body: ''
-      },
+      title: '',
+      body: '',
+      img: null,
       errors: {}
     };
   },
   computed: {
     btnDisabled: function btnDisabled() {
-      return false;
-      return this.formData.title === '' || this.formData.body === '';
+      return this.title === '' || this.body === '' || !this.img;
+    },
+    imgName: function imgName() {
+      return this.img ? this.img.name : 'Choose file';
     }
   },
   methods: {
+    imageSelected: function imageSelected(e) {
+      if (!e.target.files.length) return;
+      this.img = e.target.files[0];
+    },
     submit: function submit() {
       var _this = this;
 
-      axios.post('/api/articles', this.formData).then(function (_ref) {
+      var formData = new FormData();
+      formData.append('title', this.title);
+      formData.append('body', this.body);
+      formData.append('image', this.img);
+      axios.post('/api/articles', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (_ref) {
         var data = _ref.data;
         flash(data.message, data.status);
         _this.errors = {};
-        _this.formData.title = '';
-        _this.formData.body = '';
+        _this.title = '';
+        _this.body = '';
+        _this.img = null;
       })["catch"](function (_ref2) {
         var response = _ref2.response;
 
@@ -1863,6 +1899,11 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _VLoader__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./VLoader */ "./resources/js/components/VLoader.vue");
+//
+//
+//
+//
+//
 //
 //
 //
@@ -6534,7 +6575,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.trix-content{\n  height: 350px;\n  overflow-y: auto;\n}\n", ""]);
+exports.push([module.i, "\n.trix-content{\n  height: 350px;\n  overflow-y: auto;\n}\n.is-invalid > .trix-content {\n  border-color: #e3342f;\n}\n", ""]);
 
 // exports
 
@@ -6553,7 +6594,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.card[data-v-7b57cc65] {\n  font-size: 1rem;\n}\n", ""]);
+exports.push([module.i, "\n.card[data-v-7b57cc65] {\n  font-size: 1rem;\n}\n.img[data-v-7b57cc65] {\n  height: 200px;\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center center;\n}\n", ""]);
 
 // exports
 
@@ -38440,8 +38481,8 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.formData.title,
-              expression: "formData.title"
+              value: _vm.title,
+              expression: "title"
             }
           ],
           class: [
@@ -38449,13 +38490,13 @@ var render = function() {
             { "is-invalid": _vm.errors.hasOwnProperty("title") }
           ],
           attrs: { type: "text", id: "title" },
-          domProps: { value: _vm.formData.title },
+          domProps: { value: _vm.title },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.$set(_vm.formData, "title", $event.target.value)
+              _vm.title = $event.target.value
             }
           }
         }),
@@ -38467,18 +38508,61 @@ var render = function() {
           : _vm._e()
       ]),
       _vm._v(" "),
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", { attrs: { for: "image-upload" } }, [_vm._v("Main image")]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "custom-file", attrs: { id: "image-upload" } },
+          [
+            _c("input", {
+              class: [
+                "custom-file-input form-control",
+                { "is-invalid": _vm.errors.hasOwnProperty("title") }
+              ],
+              attrs: { type: "file", id: "customFile" },
+              on: { input: _vm.imageSelected }
+            }),
+            _vm._v(" "),
+            _c(
+              "label",
+              {
+                staticClass: "custom-file-label",
+                attrs: { for: "customFile" },
+                domProps: { textContent: _vm._s(_vm.imgName) }
+              },
+              [_vm._v("Choose file")]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _vm.errors.hasOwnProperty("body")
+          ? _c(
+              "span",
+              {
+                class: [
+                  "invalid-feedback",
+                  { "d-block": _vm.errors.hasOwnProperty("body") }
+                ]
+              },
+              [_vm._v("\n      " + _vm._s(_vm.errors["body"][0]) + "\n    ")]
+            )
+          : _vm._e()
+      ]),
+      _vm._v(" "),
       _c(
         "div",
         { staticClass: "form-group" },
         [
           _c("vue-trix", {
+            class: { "is-invalid": _vm.errors.hasOwnProperty("body") },
             attrs: { placeholder: "Enter content" },
             model: {
-              value: _vm.formData.body,
+              value: _vm.body,
               callback: function($$v) {
-                _vm.$set(_vm.formData, "body", $$v)
+                _vm.body = $$v
               },
-              expression: "formData.body"
+              expression: "body"
             }
           }),
           _vm._v(" "),
@@ -38567,16 +38651,33 @@ var render = function() {
                                 }
                               },
                               [_vm._v(_vm._s(article.author.name))]
+                            ),
+                            _vm._v(" on "),
+                            _c(
+                              "span",
+                              {
+                                staticClass: "badge-pill badge-light",
+                                staticStyle: { "font-size": "0.8rem" }
+                              },
+                              [_vm._v("December 4, 2019")]
                             )
                           ])
                         : _vm._e()
                     ]),
                     _vm._v(" "),
+                    article.image
+                      ? _c("div", {
+                          staticClass: "img",
+                          style: {
+                            "background-image": "url(" + article.image + ")"
+                          }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
                     _c("div", {
+                      staticClass: "my-2",
                       domProps: { innerHTML: _vm._s(article.excerpt) }
                     }),
-                    _vm._v(" "),
-                    _vm._m(0, true),
                     _vm._v(" "),
                     index !== _vm.articles.length - 1 ? _c("hr") : _vm._e()
                   ])
@@ -38638,18 +38739,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("span", { staticClass: "badge-pill badge-secondary" }, [
-        _vm._v("December 4, 2019")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

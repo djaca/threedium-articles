@@ -15,6 +15,6 @@ class DatabaseSeeder extends Seeder
     {
         factory(User::class)->create(['email' => 'admin@example.com']);
 
-        factory(Article::class, 20)->create();
+        factory(Article::class, 10)->create();
     }
 }

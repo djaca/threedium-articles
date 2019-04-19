@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -46,12 +48,29 @@ class CreateArticleTest extends TestCase
     }
 
     /** @test */
+    public function it_requires_an_valid_image()
+    {
+        $this->actingAs($this->user)
+             ->json('POST', route('articles.store'), ['image' => null])
+             ->assertJsonStructure(['errors' => ['image']])
+             ->assertStatus(422);
+
+        $this->actingAs($this->user)
+             ->json('POST', route('articles.store'), ['image' => 'not-valid-image'])
+             ->assertJsonStructure(['errors' => ['image']])
+             ->assertStatus(422);
+    }
+
+    /** @test */
     public function authenticated_can_create_article()
     {
+        Storage::fake('public');
+
         $this->actingAs($this->user)
              ->json('POST', route('articles.store'), [
                  'title' => 'New article',
-                 'body'  => 'Article body'
+                 'body'  => 'Article body',
+                 'image' => $file = UploadedFile::fake()->image('image.jpg')
              ])
              ->assertJson([
                  'status' => 'success',
@@ -61,7 +80,10 @@ class CreateArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title'     => 'New article',
             'body'      => 'Article body',
-            'author_id' => $this->user->id
+            'author_id' => $this->user->id,
+            'image'     => 'images/' . $file->hashName()
         ]);
+
+        Storage::disk('public')->assertExists('images/' . $file->hashName());
     }
 }
