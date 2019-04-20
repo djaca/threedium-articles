@@ -2107,6 +2107,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Wysiwyg',
@@ -2116,16 +2118,57 @@ __webpack_require__.r(__webpack_exports__);
   props: ['content', 'error'],
   data: function data() {
     return {
-      body: ''
+      body: '',
+      images: []
     };
   },
   methods: {
-    handleTextChanged: function handleTextChanged() {
+    deleteImageRemote: function deleteImageRemote(data) {
+      var name = typeof data === 'string' ? [data] : data;
+      return axios["delete"]('/api/image-delete', {
+        data: {
+          name: name
+        }
+      });
+    },
+    handleImageDelete: function handleImageDelete(oldDelta) {
+      var data = this.$refs.quill.quill.getContents().diff(oldDelta).ops[0].insert;
+
+      if (data && data.hasOwnProperty('image')) {
+        var imageName = data.image;
+        this.images.splice(this.images.indexOf(imageName), 1);
+        this.deleteImageRemote(imageName)["catch"](function (err) {
+          return console.log(err);
+        });
+      }
+    },
+    handleTextChanged: function handleTextChanged(delta, oldDelta, source) {
       this.$emit('text-changed', this.body);
+      this.handleImageDelete(oldDelta);
+    },
+    handleImageAdded: function handleImageAdded(file, Editor, cursorLocation, resetUploader) {
+      var _this = this;
+
+      var formData = new FormData();
+      formData.append('image', file);
+      axios.post('/api/image-upload', formData).then(function (result) {
+        var url = '/storage/' + result.data;
+        Editor.insertEmbed(cursorLocation, 'image', url);
+        resetUploader();
+
+        _this.images.push(url);
+      })["catch"](function (err) {
+        console.log(err);
+      });
     }
   },
   mounted: function mounted() {
+    var _this2 = this;
+
     this.body = this.content;
+    window.addEventListener('beforeunload', function () {
+      _this2.deleteImageRemote(_this2.images);
+    }, false);
   }
 });
 
@@ -38791,7 +38834,11 @@ var render = function() {
       _c("vue-editor", {
         ref: "quill",
         class: { "is-invalid": _vm.error },
-        on: { "text-change": _vm.handleTextChanged },
+        attrs: { useCustomImageHandler: "" },
+        on: {
+          imageAdded: _vm.handleImageAdded,
+          "text-change": _vm.handleTextChanged
+        },
         model: {
           value: _vm.body,
           callback: function($$v) {

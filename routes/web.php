@@ -36,5 +36,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
         Route::post('articles', 'ArticlesController@store')->name('articles.store');
         Route::patch('articles/{article}', 'ArticlesController@update')->name('articles.update');
         Route::delete('articles/{article}', 'ArticlesController@destroy')->name('articles.destroy');
+
+        Route::post('image-upload', 'ImagesController@store');
+        Route::delete('image-delete', 'ImagesController@destroy');
     });
 });
