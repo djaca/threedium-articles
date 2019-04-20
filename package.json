@@ -25,6 +25,6 @@
     },
     "dependencies": {
         "vue-spinner": "^1.0.3",
-        "vue-trix": "^0.8.1"
+        "vue2-editor": "^2.6.6"
     }
 }
