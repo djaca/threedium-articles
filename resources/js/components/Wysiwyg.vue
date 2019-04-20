@@ -86,10 +86,16 @@
 
       this.$watch('content', val => {
         this.body = val
+
+        if (this.body === '') {
+          this.images = []
+        }
       })
 
       window.addEventListener('beforeunload', () => {
-        this.deleteImageRemote(this.images)
+        if (this.images.length > 0) {
+          this.deleteImageRemote(this.images)
+        }
       }, false)
     }
   }

@@ -2168,9 +2168,15 @@ __webpack_require__.r(__webpack_exports__);
     this.body = this.content;
     this.$watch('content', function (val) {
       _this2.body = val;
+
+      if (_this2.body === '') {
+        _this2.images = [];
+      }
     });
     window.addEventListener('beforeunload', function () {
-      _this2.deleteImageRemote(_this2.images);
+      if (_this2.images.length > 0) {
+        _this2.deleteImageRemote(_this2.images);
+      }
     }, false);
   }
 });
