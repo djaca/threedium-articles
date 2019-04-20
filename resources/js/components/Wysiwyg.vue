@@ -84,6 +84,10 @@
     mounted () {
       this.body = this.content
 
+      this.$watch('content', val => {
+        this.body = val
+      })
+
       window.addEventListener('beforeunload', () => {
         this.deleteImageRemote(this.images)
       }, false)

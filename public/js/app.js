@@ -2166,6 +2166,9 @@ __webpack_require__.r(__webpack_exports__);
     var _this2 = this;
 
     this.body = this.content;
+    this.$watch('content', function (val) {
+      _this2.body = val;
+    });
     window.addEventListener('beforeunload', function () {
       _this2.deleteImageRemote(_this2.images);
     }, false);
