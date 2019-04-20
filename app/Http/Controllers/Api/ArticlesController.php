@@ -35,7 +35,7 @@ class ArticlesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'   => 'required',
+            'title'   => 'required|unique:articles,title',
             'body'    => 'required',
             'excerpt' => 'required',
             'image'   => 'required|image'

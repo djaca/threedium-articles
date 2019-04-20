@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Article;
 use App\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -30,10 +31,17 @@ class CreateArticleTest extends TestCase
     }
 
     /** @test */
-    public function it_requires_a_title()
+    public function it_requires_a_title_and_must_be_unique()
     {
         $this->actingAs($this->user)
              ->json('POST', route('articles.store'), ['title' => null])
+             ->assertJsonStructure(['errors' => ['title']])
+             ->assertStatus(422);
+
+        $article = factory(Article::class)->create();
+
+        $this->actingAs($this->user)
+             ->json('POST', route('articles.store'), ['title' => $article->title])
              ->assertJsonStructure(['errors' => ['title']])
              ->assertStatus(422);
     }
