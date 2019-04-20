@@ -2130,18 +2130,22 @@ __webpack_require__.r(__webpack_exports__);
   props: ['content', 'error'],
   data: function data() {
     return {
-      body: '',
+      body: this.content,
       images: []
     };
   },
+  computed: {
+    bodyIsEmpty: function bodyIsEmpty() {
+      return this.body === '';
+    }
+  },
   methods: {
-    deleteImageRemote: function deleteImageRemote(data) {
-      var name = typeof data === 'string' ? [data] : data;
-      return axios["delete"]('/api/image-delete', {
-        data: {
-          name: name
-        }
-      });
+    handleTextChanged: function handleTextChanged(delta, oldDelta, source) {
+      this.$emit('text-changed', this.body);
+
+      if (!this.bodyIsEmpty) {
+        this.handleImageDelete(oldDelta);
+      }
     },
     handleImageDelete: function handleImageDelete(oldDelta) {
       var data = this.$refs.quill.quill.getContents().diff(oldDelta).ops[0].insert;
@@ -2154,9 +2158,13 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    handleTextChanged: function handleTextChanged(delta, oldDelta, source) {
-      this.$emit('text-changed', this.body);
-      this.handleImageDelete(oldDelta);
+    deleteImageRemote: function deleteImageRemote(data) {
+      var name = typeof data === 'string' ? [data] : data;
+      return axios["delete"]('/api/image-delete', {
+        data: {
+          name: name
+        }
+      });
     },
     handleImageAdded: function handleImageAdded(file, Editor, cursorLocation, resetUploader) {
       var _this = this;
@@ -2177,16 +2185,15 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this2 = this;
 
-    this.body = this.content;
     this.$watch('content', function (val) {
       _this2.body = val;
 
-      if (_this2.body === '') {
+      if (_this2.bodyIsEmpty) {
         _this2.images = [];
       }
     });
     window.addEventListener('beforeunload', function () {
-      if (_this2.images.length > 0) {
+      if (!_this2.bodyIsEmpty) {
         _this2.deleteImageRemote(_this2.images);
       }
     }, false);

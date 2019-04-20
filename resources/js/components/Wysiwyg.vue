@@ -29,16 +29,24 @@
 
     data () {
       return {
-        body: '',
+        body: this.content,
         images: []
       }
     },
 
-    methods: {
-      deleteImageRemote (data) {
-        let name = typeof data === 'string' ? [data] : data
+    computed: {
+      bodyIsEmpty () {
+        return this.body === ''
+      }
+    },
 
-        return axios.delete('/api/image-delete', { data: { name } })
+    methods: {
+      handleTextChanged (delta, oldDelta, source) {
+        this.$emit('text-changed', this.body)
+
+        if (!this.bodyIsEmpty) {
+          this.handleImageDelete(oldDelta)
+        }
       },
 
       handleImageDelete (oldDelta) {
@@ -54,10 +62,10 @@
         }
       },
 
-      handleTextChanged (delta, oldDelta, source) {
-        this.$emit('text-changed', this.body)
+      deleteImageRemote (data) {
+        let name = typeof data === 'string' ? [data] : data
 
-        this.handleImageDelete(oldDelta)
+        return axios.delete('/api/image-delete', { data: { name } })
       },
 
       handleImageAdded (file, Editor, cursorLocation, resetUploader) {
@@ -82,18 +90,16 @@
     },
 
     mounted () {
-      this.body = this.content
-
       this.$watch('content', val => {
         this.body = val
 
-        if (this.body === '') {
+        if (this.bodyIsEmpty) {
           this.images = []
         }
       })
 
       window.addEventListener('beforeunload', () => {
-        if (this.images.length > 0) {
+        if (!this.bodyIsEmpty) {
           this.deleteImageRemote(this.images)
         }
       }, false)
