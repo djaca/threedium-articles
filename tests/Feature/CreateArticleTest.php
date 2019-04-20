@@ -62,24 +62,35 @@ class CreateArticleTest extends TestCase
     }
 
     /** @test */
+    public function it_requires_an_excerpt()
+    {
+        $this->actingAs($this->user)
+             ->json('POST', route('articles.store'), ['excerpt' => null])
+             ->assertJsonStructure(['errors' => ['excerpt']])
+             ->assertStatus(422);
+    }
+
+    /** @test */
     public function authenticated_can_create_article()
     {
         Storage::fake('public');
 
         $this->actingAs($this->user)
              ->json('POST', route('articles.store'), [
-                 'title' => 'New article',
-                 'body'  => 'Article body',
-                 'image' => $file = UploadedFile::fake()->image('image.jpg')
+                 'title'   => 'New article',
+                 'body'    => 'Article body',
+                 'excerpt' => 'Article excerpt',
+                 'image'   => $file = UploadedFile::fake()->image('image.jpg')
              ])
              ->assertJson([
-                 'status' => 'success',
+                 'status'  => 'success',
                  'message' => 'Article created successfully'
              ]);
 
         $this->assertDatabaseHas('articles', [
             'title'     => 'New article',
             'body'      => 'Article body',
+            'excerpt'   => 'Article excerpt',
             'author_id' => $this->user->id,
             'image'     => 'images/' . $file->hashName()
         ]);

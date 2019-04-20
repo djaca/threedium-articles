@@ -34,6 +34,15 @@
       </span>
     </div>
 
+    <div class="form-group">
+      <label for="excerpt">Excerpt</label>
+      <textarea
+        v-model="excerpt"
+        class="form-control"
+        id="excerpt"
+        rows="5"></textarea>
+    </div>
+
     <wysiwyg
       :content="body"
       @text-changed="updateBody"
@@ -67,6 +76,7 @@
       return {
         title: '',
         body: '',
+        excerpt: '',
         img: '',
         errors: {}
       }
@@ -74,7 +84,7 @@
 
     computed: {
       btnDisabled () {
-        return this.title === '' || this.body === '' || !this.img
+        return this.title === '' || this.body === '' || !this.img || this.excerpt === ''
       },
 
       imgName () {
@@ -98,6 +108,7 @@
 
         formData.append('title', this.title)
         formData.append('body', this.body)
+        formData.append('excerpt', this.excerpt)
         formData.append('image', this.img)
 
         axios.post('/api/articles', formData, {
@@ -111,6 +122,7 @@
             this.errors = {}
             this.title = ''
             this.body = ''
+            this.excerpt = ''
             this.img = null
           })
           .catch(({ response }) => {

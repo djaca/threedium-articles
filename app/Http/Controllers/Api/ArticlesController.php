@@ -35,17 +35,19 @@ class ArticlesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'body'  => 'required',
-            'image' => 'required|image'
+            'title'   => 'required',
+            'body'    => 'required',
+            'excerpt' => 'required',
+            'image'   => 'required|image'
         ]);
 
         $request->user()
                 ->articles()
                 ->create([
-                   'title' => $request->title,
-                   'body'  => $request->body,
-                   'image' => $request->file('image')->store('images', 'public')
+                    'title'   => $request->title,
+                    'body'    => $request->body,
+                    'excerpt' => $request->excerpt,
+                    'image'   => $request->file('image')->store('images', 'public')
                 ]);
 
         return response()->json([

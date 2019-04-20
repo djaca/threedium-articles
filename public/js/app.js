@@ -1821,6 +1821,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1830,13 +1839,14 @@ __webpack_require__.r(__webpack_exports__);
     return {
       title: '',
       body: '',
+      excerpt: '',
       img: '',
       errors: {}
     };
   },
   computed: {
     btnDisabled: function btnDisabled() {
-      return this.title === '' || this.body === '' || !this.img;
+      return this.title === '' || this.body === '' || !this.img || this.excerpt === '';
     },
     imgName: function imgName() {
       return this.img ? this.img.name : 'Choose file';
@@ -1856,6 +1866,7 @@ __webpack_require__.r(__webpack_exports__);
       var formData = new FormData();
       formData.append('title', this.title);
       formData.append('body', this.body);
+      formData.append('excerpt', this.excerpt);
       formData.append('image', this.img);
       axios.post('/api/articles', formData, {
         headers: {
@@ -1867,6 +1878,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.errors = {};
         _this.title = '';
         _this.body = '';
+        _this.excerpt = '';
         _this.img = null;
       })["catch"](function (_ref2) {
         var response = _ref2.response;
@@ -38566,6 +38578,32 @@ var render = function() {
               [_vm._v("\n      " + _vm._s(_vm.errors["image"][0]) + "\n    ")]
             )
           : _vm._e()
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", { attrs: { for: "excerpt" } }, [_vm._v("Excerpt")]),
+        _vm._v(" "),
+        _c("textarea", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.excerpt,
+              expression: "excerpt"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { id: "excerpt", rows: "5" },
+          domProps: { value: _vm.excerpt },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.excerpt = $event.target.value
+            }
+          }
+        })
       ]),
       _vm._v(" "),
       _c("wysiwyg", {
