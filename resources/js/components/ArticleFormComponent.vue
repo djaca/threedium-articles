@@ -18,7 +18,7 @@
 
       <div class="custom-file" id="image-upload">
         <input
-          :class="['custom-file-input form-control', { 'is-invalid': errors.hasOwnProperty('title') }]"
+          :class="['custom-file-input form-control', { 'is-invalid': errors.hasOwnProperty('image') }]"
           type="file"
           id="customFile"
           @input="imageSelected"
@@ -27,28 +27,20 @@
       </div>
 
       <span
-        :class="['invalid-feedback', { 'd-block': errors.hasOwnProperty('body') }]"
-        v-if="errors.hasOwnProperty('body')"
+        :class="['invalid-feedback', { 'd-block': errors.hasOwnProperty('image') }]"
+        v-if="errors.hasOwnProperty('image')"
       >
-        {{ errors['body'][0] }}
+        {{ errors['image'][0] }}
       </span>
     </div>
 
-    <div class="form-group">
-      <vue-trix
-        :class="{ 'is-invalid': errors.hasOwnProperty('body') }"
-        v-model="body"
-        placeholder="Enter content"
-      />
-      <span
-        :class="['invalid-feedback', { 'd-block': errors.hasOwnProperty('body') }]"
-        v-if="errors.hasOwnProperty('body')"
-      >
-        {{ errors['body'][0] }}
-      </span>
-    </div>
+    <wysiwyg
+      :content="body"
+      @text-changed="updateBody"
+      :error="errors.hasOwnProperty('body') ? errors['body'][0] : null"
+    />
 
-    <div class="form-group row mb-0">
+    <div class="form-group row mb-0 mt-4">
       <div class="col-md-6">
         <button
           type="submit"
@@ -64,18 +56,18 @@
 </template>
 
 <script>
-  import VueTrix from "vue-trix"
+  import Wysiwyg from './Wysiwyg'
 
   export default {
     components: {
-      VueTrix
+      Wysiwyg
     },
 
     data () {
       return {
         title: '',
         body: '',
-        img: null,
+        img: '',
         errors: {}
       }
     },
@@ -91,6 +83,10 @@
     },
 
     methods: {
+      updateBody (val) {
+        this.body = val
+      },
+
       imageSelected (e) {
         if (! e.target.files.length) return
 
@@ -130,14 +126,3 @@
     }
   }
 </script>
-
-<style>
-  .trix-content{
-    height: 350px;
-    overflow-y: auto;
-  }
-
-  .is-invalid > .trix-content {
-    border-color: #e3342f;
-  }
-</style>
