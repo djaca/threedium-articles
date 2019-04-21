@@ -7,6 +7,8 @@
       useCustomImageHandler
       @imageAdded="handleImageAdded"
       @text-change="handleTextChanged"
+      :customModules="customModulesForEditor"
+      :editorOptions="editorSettings"
     />
 
     <span
@@ -19,6 +21,7 @@
 
 <script>
   import { VueEditor } from 'vue2-editor'
+  import ImageResize from 'quill-image-resize-module'
 
   export default {
     name: 'Wysiwyg',
@@ -30,7 +33,15 @@
     data () {
       return {
         body: this.content,
-        images: []
+        images: [],
+        customModulesForEditor: [
+          { alias: 'imageResize', module: ImageResize }
+        ],
+        editorSettings: {
+          modules: {
+            imageResize: {}
+          }
+        }
       }
     },
 
