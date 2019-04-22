@@ -1829,12 +1829,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Wysiwyg: _Wysiwyg__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
+  props: ['article'],
   data: function data() {
     return {
       title: '',
@@ -1845,11 +1845,18 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
-    btnDisabled: function btnDisabled() {
-      return this.title === '' || this.body === '' || !this.img || this.excerpt === '';
+    isEditing: function isEditing() {
+      return !!this.article.id;
     },
     imgName: function imgName() {
       return this.img ? this.img.name : 'Choose file';
+    }
+  },
+  mounted: function mounted() {
+    if (this.isEditing) {
+      this.title = this.article.title;
+      this.excerpt = this.article.excerpt;
+      this.body = this.article.body;
     }
   },
   methods: {
@@ -38818,7 +38825,7 @@ var render = function() {
             "button",
             {
               staticClass: "btn btn-primary",
-              attrs: { type: "submit", disabled: _vm.btnDisabled },
+              attrs: { type: "submit" },
               on: { click: _vm.submit }
             },
             [_vm._v("\n          Submit\n      ")]
@@ -39023,7 +39030,7 @@ var render = function() {
                   "a",
                   {
                     staticClass: "btn btn-sm btn-outline-info",
-                    attrs: { href: "#" }
+                    attrs: { href: "/articles/" + article.id + "/edit" }
                   },
                   [_vm._v("Edit")]
                 ),

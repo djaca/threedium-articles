@@ -13,7 +13,7 @@
         <td><a :href="'/articles/'+article.id" v-text="article.title"></a></td>
         <td v-text="article.created_at"></td>
         <td>
-          <a href="#" class="btn btn-sm btn-outline-info">Edit</a>
+          <a :href="'/articles/'+article.id+'/edit'" class="btn btn-sm btn-outline-info">Edit</a>
           <button
             class="btn btn-sm btn-outline-danger"
             @click="doRemove(article.id)"

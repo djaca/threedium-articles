@@ -54,7 +54,6 @@
         <button
           type="submit"
           class="btn btn-primary"
-          :disabled="btnDisabled"
           @click="submit"
           >
             Submit
@@ -72,6 +71,8 @@
       Wysiwyg
     },
 
+    props: ['article'],
+
     data () {
       return {
         title: '',
@@ -83,12 +84,20 @@
     },
 
     computed: {
-      btnDisabled () {
-        return this.title === '' || this.body === '' || !this.img || this.excerpt === ''
+      isEditing () {
+        return !!this.article.id
       },
 
       imgName () {
         return this.img ? this.img.name : 'Choose file'
+      }
+    },
+
+    mounted () {
+      if (this.isEditing) {
+        this.title = this.article.title
+        this.excerpt = this.article.excerpt
+        this.body = this.article.body
       }
     },
 
