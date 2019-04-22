@@ -21,6 +21,7 @@ require('./bootstrap')
 Vue.component('articles', require('./components/ArticlesComponent.vue').default)
 Vue.component('article-form', require('./components/ArticleFormComponent.vue').default)
 Vue.component('flash', require('./components/FlashComponent.vue').default)
+Vue.component('articles-table', require('./components/ArticlesTable.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
