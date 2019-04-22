@@ -14,7 +14,12 @@
         <td v-text="article.created_at"></td>
         <td>
           <a href="#" class="btn btn-sm btn-outline-info">Edit</a>
-          <button class="btn btn-sm btn-outline-danger">Delete</button>
+          <button
+            class="btn btn-sm btn-outline-danger"
+            @click="doRemove(article.id)"
+          >
+            Delete
+          </button>
         </td>
       </tr>
       </tbody>
@@ -78,6 +83,16 @@
           .finally(() => {
             this.loading = false
           })
+      },
+
+      doRemove (id) {
+        axios.delete(`/api/articles/${id}`)
+          .then(({ data }) => {
+            flash(data.message, data.status)
+
+            this.articles.splice(this.articles.findIndex(article => article.id === id), 1)
+          })
+          .catch(err => console.log(err))
       }
     },
 

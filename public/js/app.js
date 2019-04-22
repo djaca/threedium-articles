@@ -2089,6 +2089,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2123,6 +2128,20 @@ __webpack_require__.r(__webpack_exports__);
         return console.log(e);
       })["finally"](function () {
         _this.loading = false;
+      });
+    },
+    doRemove: function doRemove(id) {
+      var _this2 = this;
+
+      axios["delete"]("/api/articles/".concat(id)).then(function (_ref2) {
+        var data = _ref2.data;
+        flash(data.message, data.status);
+
+        _this2.articles.splice(_this2.articles.findIndex(function (article) {
+          return article.id === id;
+        }), 1);
+      })["catch"](function (err) {
+        return console.log(err);
       });
     }
   },
@@ -38999,7 +39018,29 @@ var render = function() {
                 domProps: { textContent: _vm._s(article.created_at) }
               }),
               _vm._v(" "),
-              _vm._m(1, true)
+              _c("td", [
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-sm btn-outline-info",
+                    attrs: { href: "#" }
+                  },
+                  [_vm._v("Edit")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-sm btn-outline-danger",
+                    on: {
+                      click: function($event) {
+                        return _vm.doRemove(article.id)
+                      }
+                    }
+                  },
+                  [_vm._v("\n          Delete\n        ")]
+                )
+              ])
             ])
           }),
           0
@@ -39048,22 +39089,6 @@ var staticRenderFns = [
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Published")]),
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Actions")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "a",
-        { staticClass: "btn btn-sm btn-outline-info", attrs: { href: "#" } },
-        [_vm._v("Edit")]
-      ),
-      _vm._v(" "),
-      _c("button", { staticClass: "btn btn-sm btn-outline-danger" }, [
-        _vm._v("Delete")
       ])
     ])
   }
