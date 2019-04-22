@@ -14,7 +14,7 @@
                 {{ $article->excerpt }}
               </h4>
 
-              <h5><a href="#">{{ $article->author->name }}</a> - {{ $article->created_at }}</h5>
+              <h5><a href="/articles?author={{ $article->author->id  }}">{{ $article->author->name }}</a> - {{ $article->created_at }}</h5>
             </div>
 
             <div class="card-text mt-5" style="font-size: 1.1rem">

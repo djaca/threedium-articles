@@ -5,7 +5,7 @@
         <div v-for="(article, index) in articles" :key="index">
           <div class="mb-3">
             <h1 v-text="article.title"></h1>
-            <h6 v-if="article.author">by <a href="#" @click.prevent="filterBy(article.author)">{{ article.author.name }}</a> on <span class="badge-pill badge-light" style="font-size: 0.8rem">December 4, 2019</span></h6>
+            <h6 v-if="article.author">by <a href="#" @click.prevent="filterBy(article.author.id)">{{ article.author.name }}</a> on <span class="badge-pill badge-light" style="font-size: 0.8rem">December 4, 2019</span></h6>
           </div>
 
           <div
@@ -41,6 +41,10 @@
 <script>
   import VLoader from './VLoader'
 
+  function getQueryParameters (str) {
+    return (str || document.location.search).replace(/(^\?)/,'').split("&").map(function(n){return n = n.split("="),this[n[0]] = n[1],this}.bind({}))[0];
+  }
+
   export default {
     name: 'ArticlesComponent',
 
@@ -49,6 +53,20 @@
     },
 
     mounted () {
+      window.onpopstate = () => {
+        this.articles = []
+
+        this.pagination = null
+
+        this.getArticles()
+      };
+
+      let urlParams = getQueryParameters(window.location.search)
+
+      if (urlParams.hasOwnProperty('author')) {
+        return this.fetchArticlesFor(urlParams.author)
+      }
+
       this.getArticles()
     },
 
@@ -80,12 +98,18 @@
           })
       },
 
-      filterBy (author) {
+      filterBy (id) {
         this.articles = []
 
         this.pagination = null
 
-        this.getArticles(`/api/articles?author=${author.id}`)
+        this.fetchArticlesFor(id)
+
+        history.pushState({}, null, `${window.location.href}?author=${id}`);
+      },
+
+      fetchArticlesFor(id) {
+        return this.getArticles(`/api/articles?author=${id}`)
       },
 
       setPagination (data) {

@@ -1947,12 +1947,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
+function getQueryParameters(str) {
+  return (str || document.location.search).replace(/(^\?)/, '').split("&").map(function (n) {
+    return n = n.split("="), this[n[0]] = n[1], this;
+  }.bind({}))[0];
+}
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ArticlesComponent',
   components: {
     VLoader: _VLoader__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   mounted: function mounted() {
+    var _this = this;
+
+    window.onpopstate = function () {
+      _this.articles = [];
+      _this.pagination = null;
+
+      _this.getArticles();
+    };
+
+    var urlParams = getQueryParameters(window.location.search);
+
+    if (urlParams.hasOwnProperty('author')) {
+      return this.fetchArticlesFor(urlParams.author);
+    }
+
     this.getArticles();
   },
   data: function data() {
@@ -1964,27 +1986,31 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     getArticles: function getArticles(uri) {
-      var _this = this;
+      var _this2 = this;
 
       this.loading = true;
       var url = uri || '/api/articles';
       axios.get(url).then(function (_ref) {
         var data = _ref.data;
         data.data.forEach(function (article) {
-          _this.articles.push(article);
+          _this2.articles.push(article);
         });
 
-        _this.setPagination(data);
+        _this2.setPagination(data);
       })["catch"](function (e) {
         return console.log(e);
       })["finally"](function () {
-        _this.loading = false;
+        _this2.loading = false;
       });
     },
-    filterBy: function filterBy(author) {
+    filterBy: function filterBy(id) {
       this.articles = [];
       this.pagination = null;
-      this.getArticles("/api/articles?author=".concat(author.id));
+      this.fetchArticlesFor(id);
+      history.pushState({}, null, "".concat(window.location.href, "?author=").concat(id));
+    },
+    fetchArticlesFor: function fetchArticlesFor(id) {
+      return this.getArticles("/api/articles?author=".concat(id));
     },
     setPagination: function setPagination(data) {
       this.pagination = {
@@ -38727,7 +38753,7 @@ var render = function() {
                                 on: {
                                   click: function($event) {
                                     $event.preventDefault()
-                                    return _vm.filterBy(article.author)
+                                    return _vm.filterBy(article.author.id)
                                   }
                                 }
                               },

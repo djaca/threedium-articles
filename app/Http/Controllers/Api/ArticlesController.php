@@ -22,7 +22,7 @@ class ArticlesController extends Controller
             ? User::findOrFail(request('author'))->articles()->orderBy('articles.created_at', 'desc')
             : Article::with('author')->orderBy('created_at', 'desc');
 
-        $articles = $articles->simplePaginate(5);
+        $articles = $articles->simplePaginate(5)->appends(request()->query());
 
         return response()->json($articles);
     }
