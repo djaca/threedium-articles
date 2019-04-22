@@ -96,6 +96,8 @@ class ArticlesController extends Controller
 
         $article->delete();
 
+        Storage::delete($article->getOriginal('image'));
+
         return response()->json([
             'status'  => 'success',
             'message' => 'Article deleted successfully'
