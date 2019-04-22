@@ -25,6 +25,7 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('articles', 'ArticlesController@index');
 Route::get('articles/create', 'ArticlesController@create')->name('articles.create')->middleware('auth');
+Route::get('my-articles', 'AuthorController@articles')->middleware('auth');
 Route::get('articles/{article}', 'ArticlesController@show')->name('articles.show');
 
 // API
