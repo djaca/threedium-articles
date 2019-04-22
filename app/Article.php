@@ -15,6 +15,6 @@ class Article extends Model
 
     public function getImageAttribute($image)
     {
-        return $image ? asset('storage/' . $image) : null;
+        return $image ? asset('storage/images/' . $image) : null;
     }
 }

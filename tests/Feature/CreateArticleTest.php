@@ -19,6 +19,8 @@ class CreateArticleTest extends TestCase
     {
         parent::setUp();
 
+        Storage::fake('images');
+
         $this->user = factory(User::class)->create();
     }
 
@@ -38,7 +40,9 @@ class CreateArticleTest extends TestCase
              ->assertJsonStructure(['errors' => ['title']])
              ->assertStatus(422);
 
-        $article = factory(Article::class)->create();
+        $article = factory(Article::class)->create([
+            'image' => UploadedFile::fake()->image('image.jpg')
+        ]);
 
         $this->actingAs($this->user)
              ->json('POST', route('articles.store'), ['title' => $article->title])
@@ -81,8 +85,6 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function authenticated_can_create_article()
     {
-        Storage::fake('public');
-
         $this->actingAs($this->user)
              ->json('POST', route('articles.store'), [
                  'title'   => 'New article',
@@ -100,9 +102,9 @@ class CreateArticleTest extends TestCase
             'body'      => 'Article body',
             'excerpt'   => 'Article excerpt',
             'author_id' => $this->user->id,
-            'image'     => 'images/' . $file->hashName()
+            'image'     => $file->hashName()
         ]);
 
-        Storage::disk('public')->assertExists('images/' . $file->hashName());
+        Storage::assertExists($file->hashName());
     }
 }

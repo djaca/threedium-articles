@@ -12,9 +12,9 @@ $factory->define(App\Article::class, function (Faker $faker) {
             return factory(User::class)->create()->id;
         },
         'image' => function () use ($faker) {
-            $img = $faker->image(storage_path('app/public/images'), 1920, 417, null, false);
+            $img = $faker->image(storage_path('app/public/images'), 918, 400, null, false);
 
-            return 'images/' . $img;
+            return $img;
         }
     ];
 });

@@ -6,6 +6,7 @@ use App\Article;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 class ArticlesController extends Controller
@@ -47,7 +48,7 @@ class ArticlesController extends Controller
                     'title'   => $request->title,
                     'body'    => $request->body,
                     'excerpt' => $request->excerpt,
-                    'image'   => $request->file('image')->store('images', 'public')
+                    'image'   => $this->handleImage(request()->file('image'))
                 ]);
 
         return response()->json([
@@ -99,5 +100,18 @@ class ArticlesController extends Controller
             'status'  => 'success',
             'message' => 'Article deleted successfully'
         ]);
+    }
+
+    private function handleImage($file)
+    {
+        $photo = Image::make($file->getRealPath())
+                      ->fit(918, 400, function ($constraint) {
+                          $constraint->upsize();
+                      })
+                      ->encode('jpg');
+
+        Storage::put($name = $file->hashName(), $photo);
+
+        return $name;
     }
 }

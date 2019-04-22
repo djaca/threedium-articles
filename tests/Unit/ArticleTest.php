@@ -20,7 +20,7 @@ class ArticleTest extends TestCase
             'body'      => 'Body of the article',
             'excerpt'   => 'Excerpt of the article',
             'author_id' => factory(User::class)->create()->id,
-            'image'     => 'images/image.jpg'
+            'image'     => 'image.jpg'
         ]);
 
         $this->assertEquals('New article', $article->title);
