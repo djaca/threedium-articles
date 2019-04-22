@@ -92,7 +92,19 @@
 
             this.setPagination(data)
           })
-          .catch(e => console.log(e))
+          .catch(({ response }) => {
+            this.articles = []
+
+            this.pagination = null
+
+            if (response.status === 404) {
+              flash('Can`t find author', 'danger')
+
+              window.history.replaceState({}, null, '/articles')
+
+              this.getArticles()
+            }
+          })
           .finally(() => {
             this.loading = false
           })

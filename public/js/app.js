@@ -1997,8 +1997,17 @@ function getQueryParameters(str) {
         });
 
         _this2.setPagination(data);
-      })["catch"](function (e) {
-        return console.log(e);
+      })["catch"](function (_ref2) {
+        var response = _ref2.response;
+        _this2.articles = [];
+        _this2.pagination = null;
+
+        if (response.status === 404) {
+          flash('Can`t find author', 'danger');
+          window.history.replaceState({}, null, '/articles');
+
+          _this2.getArticles();
+        }
       })["finally"](function () {
         _this2.loading = false;
       });
