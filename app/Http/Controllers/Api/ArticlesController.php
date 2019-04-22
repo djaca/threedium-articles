@@ -71,10 +71,19 @@ class ArticlesController extends Controller
 
         $request->validate([
             'title' => 'required',
-            'body'  => 'required'
+            'body'  => 'required',
+            'excerpt' => 'required',
+            'image'   => 'nullable|image'
         ]);
 
-        $article->update($request->only(['title', 'body']));
+        $article->update($request->only(['title', 'body', 'excerpt']));
+
+        if ($request->has('image')) {
+            Storage::delete($article->getOriginal('image'));
+
+            $article->image = $this->handleImage($request->image);
+            $article->save();
+        }
 
         return response()->json([
             'status'  => 'success',
