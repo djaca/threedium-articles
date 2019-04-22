@@ -14,13 +14,17 @@ class WysiwygImageHandleTest extends TestCase
 
     protected $user;
 
+    protected $image;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        Storage::fake('public');
+        Storage::fake('images');
 
         $this->user = factory(User::class)->create();
+
+        $this->image = UploadedFile::fake()->image('image.jpg');
     }
 
     /** @test */
@@ -46,12 +50,10 @@ class WysiwygImageHandleTest extends TestCase
     /** @test */
     public function authenticated_user_can_upload_image()
     {
-        $file = UploadedFile::fake()->image('image.jpg');
-
         $this->actingAs($this->user)
-             ->json('POST', 'api/image-upload', ['image' => $file]);
+             ->json('POST', 'api/image-upload', ['image' => $this->image]);
 
-        Storage::disk('public')->assertExists('images/' . $file->hashName());
+        Storage::assertExists($this->image->hashName());
     }
 
     /** @test */
@@ -73,13 +75,11 @@ class WysiwygImageHandleTest extends TestCase
     /** @test */
     public function authenticated_user_can_delete_image()
     {
-        $fileOne = UploadedFile::fake()->image('image-one.jpg');
-        $fileTwo = UploadedFile::fake()->image('image-two.jpg');
+        $this->authenticated_user_can_upload_image();
 
         $this->actingAs($this->user)
-             ->json('DELETE', 'api/image-delete', ['name' => [$fileOne, $fileTwo]]);
+             ->json('DELETE', 'api/image-delete', ['name' => [$this->image->hashName()]]);
 
-        Storage::disk('public')->assertMissing('images/' . $fileOne->hashName());
-        Storage::disk('public')->assertMissing('images/' . $fileTwo->hashName());
+        Storage::assertMissing($this->image->hashName());
     }
 }

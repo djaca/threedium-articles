@@ -20,8 +20,12 @@
 </template>
 
 <script>
-  import { VueEditor } from 'vue2-editor'
+  import { VueEditor, Quill } from 'vue2-editor'
   import ImageResize from 'quill-image-resize-module'
+
+  let Image = Quill.import('formats/image');
+  Image.className = 'img-fluid';
+  Quill.register(Image, true);
 
   export default {
     name: 'Wysiwyg',
@@ -55,28 +59,27 @@
       handleTextChanged (delta, oldDelta, source) {
         this.$emit('text-changed', this.body)
 
-        if (!this.bodyIsEmpty) {
-          this.handleImageDelete(oldDelta)
-        }
+        this.handleImageDelete(oldDelta)
       },
 
       handleImageDelete (oldDelta) {
+        if (this.images.length === 0) { return }
+
         let data = this.$refs.quill.quill.getContents().diff(oldDelta).ops[0].insert
 
         if (data && data.hasOwnProperty('image')) {
-          let imageName = data.image
+          let imageName = /[^/]*$/.exec(data.image)[0]
 
           this.images.splice(this.images.indexOf(imageName), 1)
 
           this.deleteImageRemote(imageName)
-            .catch(err => console.log(err))
         }
       },
 
       deleteImageRemote (data) {
         let name = typeof data === 'string' ? [data] : data
 
-        return axios.delete('/api/image-delete', { data: { name } })
+        axios.delete('/api/image-delete', { data: { name } })
       },
 
       handleImageAdded (file, Editor, cursorLocation, resetUploader) {
@@ -86,13 +89,13 @@
 
         axios.post('/api/image-upload', formData)
           .then((result) => {
-            let url = '/storage/' + result.data
+            let url = '/storage/images/' + result.data
 
             Editor.insertEmbed(cursorLocation, 'image', url)
 
             resetUploader()
 
-            this.images.push(url)
+            this.images.push(result.data)
           })
           .catch((err) => {
             console.log(err)
@@ -110,7 +113,7 @@
       })
 
       window.addEventListener('beforeunload', () => {
-        if (!this.bodyIsEmpty) {
+        if (this.images.length > 0) {
           this.deleteImageRemote(this.images)
         }
       }, false)

@@ -2127,6 +2127,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 
+var Image = vue2_editor__WEBPACK_IMPORTED_MODULE_0__["Quill"]["import"]('formats/image');
+Image.className = 'img-fluid';
+vue2_editor__WEBPACK_IMPORTED_MODULE_0__["Quill"].register(Image, true);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Wysiwyg',
   components: {
@@ -2156,25 +2159,24 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     handleTextChanged: function handleTextChanged(delta, oldDelta, source) {
       this.$emit('text-changed', this.body);
-
-      if (!this.bodyIsEmpty) {
-        this.handleImageDelete(oldDelta);
-      }
+      this.handleImageDelete(oldDelta);
     },
     handleImageDelete: function handleImageDelete(oldDelta) {
+      if (this.images.length === 0) {
+        return;
+      }
+
       var data = this.$refs.quill.quill.getContents().diff(oldDelta).ops[0].insert;
 
       if (data && data.hasOwnProperty('image')) {
-        var imageName = data.image;
+        var imageName = /[^/]*$/.exec(data.image)[0];
         this.images.splice(this.images.indexOf(imageName), 1);
-        this.deleteImageRemote(imageName)["catch"](function (err) {
-          return console.log(err);
-        });
+        this.deleteImageRemote(imageName);
       }
     },
     deleteImageRemote: function deleteImageRemote(data) {
       var name = typeof data === 'string' ? [data] : data;
-      return axios["delete"]('/api/image-delete', {
+      axios["delete"]('/api/image-delete', {
         data: {
           name: name
         }
@@ -2186,11 +2188,11 @@ __webpack_require__.r(__webpack_exports__);
       var formData = new FormData();
       formData.append('image', file);
       axios.post('/api/image-upload', formData).then(function (result) {
-        var url = '/storage/' + result.data;
+        var url = '/storage/images/' + result.data;
         Editor.insertEmbed(cursorLocation, 'image', url);
         resetUploader();
 
-        _this.images.push(url);
+        _this.images.push(result.data);
       })["catch"](function (err) {
         console.log(err);
       });
@@ -2207,7 +2209,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     });
     window.addEventListener('beforeunload', function () {
-      if (!_this2.bodyIsEmpty) {
+      if (_this2.images.length > 0) {
         _this2.deleteImageRemote(_this2.images);
       }
     }, false);

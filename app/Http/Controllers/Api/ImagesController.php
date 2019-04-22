@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class ImagesController extends Controller
 {
@@ -14,7 +14,15 @@ class ImagesController extends Controller
             'image' => 'required|image'
         ]);
 
-        return request()->file('image')->store('images', 'public');
+        $photo = Image::make(request()->file('image')->getRealPath())
+                      ->resize(1200, null, function ($constraint) {
+                          $constraint->aspectRatio();
+                      })
+                      ->encode('jpg');
+
+        Storage::put($name = request()->file('image')->hashName(), $photo);
+
+        return $name;
     }
 
     /**
@@ -27,7 +35,7 @@ class ImagesController extends Controller
         ]);
 
         foreach (request('name') as $name) {
-            Storage::disk('public')->delete('images/' . substr($name, strrpos($name, '/') + 1));
+            Storage::disk('images')->delete($name);
         }
 
         return response()->json([
