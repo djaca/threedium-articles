@@ -19,15 +19,22 @@ Route::get('/home', function () {
     return redirect('/articles');
 })->name('home');
 
-Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::post('login', 'Auth\LoginController@login');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+// Auth
+Route::group(['namespace' => 'Auth'], function () {
+    Route::get('login', 'LoginController@showLoginForm')->name('login');
+    Route::post('login', 'LoginController@login');
+    Route::post('logout', 'LoginController@logout')->name('logout');
+});
 
 Route::get('articles', 'ArticlesController@index');
-Route::get('articles/create', 'ArticlesController@create')->name('articles.create')->middleware('auth');
-Route::get('articles/{article}/edit', 'ArticlesController@edit')->middleware('auth');
-Route::get('my-articles', 'AuthorController@articles')->middleware('auth');
 Route::get('articles/{article}', 'ArticlesController@show')->name('articles.show');
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('articles/create', 'ArticlesController@create')->name('articles.create');
+    Route::get('articles/{article}/edit', 'ArticlesController@edit');
+    Route::get('my-articles', 'AuthorController@articles');
+
+});
 
 // API
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {

@@ -2114,6 +2114,7 @@ __webpack_require__.r(__webpack_exports__);
     VLoader: _VLoader__WEBPACK_IMPORTED_MODULE_0__["default"],
     Paginate: vuejs_paginate__WEBPACK_IMPORTED_MODULE_1___default.a
   },
+  props: ['user'],
   data: function data() {
     return {
       loading: false,
@@ -2132,7 +2133,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.loading = true;
-      axios.get("/api/articles?author=".concat(App.user.id, "&page=").concat(this.page, "&per_page=10")).then(function (_ref) {
+      axios.get("/api/articles?author=".concat(this.user.id, "&page=").concat(this.page, "&per_page=10")).then(function (_ref) {
         var data = _ref.data;
         _this.articles = data.data;
         _this.pageCount = Math.ceil(data.total / data.per_page);

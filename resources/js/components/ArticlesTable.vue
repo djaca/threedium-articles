@@ -54,6 +54,8 @@
       VLoader, Paginate
     },
 
+    props: ['user'],
+
     data () {
       return {
         loading: false,
@@ -73,7 +75,7 @@
       getArticles () {
         this.loading = true
 
-        axios.get(`/api/articles?author=${App.user.id}&page=${this.page}&per_page=10`)
+        axios.get(`/api/articles?author=${this.user.id}&page=${this.page}&per_page=10`)
           .then(({data}) => {
             this.articles = data.data
 

@@ -5,16 +5,25 @@
     <div class="row justify-content-center">
       <div class="col-md-10">
         <div class="card">
-          <img src="{{ $article->image }}" class="card-img-top" alt="...">
+          <img src="{{ $article->image }}" class="card-img-top" alt="{{ $article->title }}">
+
           <div class="card-body">
 
             <div class="text-center">
-              <h1 class="card-title display-4">{{ $article->title }}</h1>
+              <h1 class="card-title display-4">
+                {{ $article->title }}
+              </h1>
               <h4 class="card-subtitle mb-3">
                 {{ $article->subtitle }}
               </h4>
 
-              <h5><a href="/articles?author={{ $article->author->id  }}">{{ $article->author->name }}</a> - {{ $article->created_at }}</h5>
+              <h5>
+                <a href="/articles?author={{ $article->author->id  }}">
+                  {{ $article->author->name }}
+                </a>
+                -
+                {{ $article->created_at }}
+              </h5>
             </div>
 
             <div class="card-text mt-5" style="font-size: 1.1rem">
