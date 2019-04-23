@@ -61,24 +61,26 @@ class ArticlesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Article $article
+     * @param \Illuminate\Http\Request $request
+     * @param Article                  $article
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Article $article)
     {
         $this->authorize('update', $article);
 
         $request->validate([
-            'title' => 'required',
-            'body'  => 'required',
+            'title'   => 'required|unique:articles,title,' . $article->id,
+            'body'    => 'required',
             'excerpt' => 'required',
             'image'   => 'nullable|image'
         ]);
 
         $article->update($request->only(['title', 'body', 'excerpt']));
 
-        if ($request->has('image')) {
+        if ($request->hasFile('image')) {
             Storage::delete($article->getOriginal('image'));
 
             $article->image = $this->handleImage($request->image);
