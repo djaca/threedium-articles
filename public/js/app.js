@@ -1830,11 +1830,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Wysiwyg: _Wysiwyg__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
+  props: ['article'],
   data: function data() {
     return {
       title: '',
@@ -1845,11 +1849,18 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
-    btnDisabled: function btnDisabled() {
-      return this.title === '' || this.body === '' || !this.img || this.excerpt === '';
+    isEditing: function isEditing() {
+      return !!this.article.id;
     },
     imgName: function imgName() {
       return this.img ? this.img.name : 'Choose file';
+    }
+  },
+  mounted: function mounted() {
+    if (this.isEditing) {
+      this.title = this.article.title;
+      this.excerpt = this.article.excerpt;
+      this.body = this.article.body;
     }
   },
   methods: {
@@ -1868,18 +1879,29 @@ __webpack_require__.r(__webpack_exports__);
       formData.append('body', this.body);
       formData.append('excerpt', this.excerpt);
       formData.append('image', this.img);
-      axios.post('/api/articles', formData, {
+
+      if (this.isEditing) {
+        formData.append('_method', 'PATCH');
+      }
+
+      axios({
+        data: formData,
+        method: 'POST',
+        url: this.isEditing ? "/api/articles/".concat(this.article.id) : '/api/articles',
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }).then(function (_ref) {
         var data = _ref.data;
         flash(data.message, data.status);
-        _this.errors = {};
-        _this.title = '';
-        _this.body = '';
-        _this.excerpt = '';
-        _this.img = null;
+
+        if (!_this.isEditing) {
+          _this.errors = {};
+          _this.title = '';
+          _this.body = '';
+          _this.excerpt = '';
+          _this.img = null;
+        }
       })["catch"](function (_ref2) {
         var response = _ref2.response;
 
@@ -38788,7 +38810,10 @@ var render = function() {
               expression: "excerpt"
             }
           ],
-          staticClass: "form-control",
+          class: [
+            "form-control",
+            { "is-invalid": _vm.errors.hasOwnProperty("excerpt") }
+          ],
           attrs: { id: "excerpt", rows: "5" },
           domProps: { value: _vm.excerpt },
           on: {
@@ -38799,7 +38824,13 @@ var render = function() {
               _vm.excerpt = $event.target.value
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _vm.errors.hasOwnProperty("body")
+          ? _c("span", { staticClass: "invalid-feedback" }, [
+              _vm._v("\n        " + _vm._s(_vm.errors["body"][0]) + "\n      ")
+            ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _c("wysiwyg", {
@@ -38818,7 +38849,7 @@ var render = function() {
             "button",
             {
               staticClass: "btn btn-primary",
-              attrs: { type: "submit", disabled: _vm.btnDisabled },
+              attrs: { type: "submit" },
               on: { click: _vm.submit }
             },
             [_vm._v("\n          Submit\n      ")]
@@ -39023,7 +39054,7 @@ var render = function() {
                   "a",
                   {
                     staticClass: "btn btn-sm btn-outline-info",
-                    attrs: { href: "#" }
+                    attrs: { href: "/articles/" + article.id + "/edit" }
                   },
                   [_vm._v("Edit")]
                 ),

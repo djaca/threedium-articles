@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Article;
 use App\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -20,6 +22,7 @@ class UpdateArticleTest extends TestCase
         parent::setUp();
 
         $this->user = factory(User::class)->create();
+
         $this->article = factory(Article::class)->create([
             'author_id' => $this->user->id
         ]);
@@ -45,6 +48,14 @@ class UpdateArticleTest extends TestCase
     }
 
     /** @test */
+    public function optional_image_must_be_valid()
+    {
+        $this->updateArticle(['image' => 'not-valid-image'])
+             ->assertJsonStructure(['errors' => ['image']])
+             ->assertStatus(422);
+    }
+
+    /** @test */
     public function it_requires_a_body()
     {
         $this->updateArticle(['body' => null])
@@ -53,9 +64,28 @@ class UpdateArticleTest extends TestCase
     }
 
     /** @test */
+    public function it_requires_an_excerpt()
+    {
+        $this->updateArticle(['excerpt' => null])
+             ->assertJsonStructure(['errors' => ['excerpt']])
+             ->assertStatus(422);
+    }
+
+    /** @test */
     public function article_can_be_updated_by_its_author()
     {
-        $data = ['title' => 'Updated Article', 'body' => 'updated body'];
+        Storage::fake('images');
+
+        $oldMainImage = UploadedFile::fake()->image('image.jpg')->storeAs('', 'image.jpg');
+
+        $data = [
+            'title'   => 'Updated Article',
+            'body'    => 'updated body',
+            'excerpt' => 'updated excerpt',
+            'image'   => $mainImage = UploadedFile::fake()->image('image.jpg')
+        ];
+
+        Storage::assertExists($oldMainImage);
 
         $this->updateArticle($data)
              ->assertJson([
@@ -65,8 +95,14 @@ class UpdateArticleTest extends TestCase
 
         $this->assertDatabaseHas('articles', [
             'title'     => $data['title'],
-            'body'      => $data['body']
+            'body'      => $data['body'],
+            'excerpt'   => $data['excerpt'],
+            'image'     => $mainImage->hashName()
         ]);
+
+        Storage::assertExists($mainImage->hashName());
+
+        Storage::assertMissing($oldMainImage);
     }
 
     private function updateArticle($overrides = [])

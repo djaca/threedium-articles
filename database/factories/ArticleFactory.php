@@ -12,6 +12,9 @@ $factory->define(App\Article::class, function (Faker $faker) {
             return factory(User::class)->create()->id;
         },
         'image' => function () use ($faker) {
+            if (app()->environment() === 'testing') {
+                return 'image.jpg';
+            }
             $img = $faker->image(storage_path('app/public/images'), 918, 400, null, false);
 
             return $img;
