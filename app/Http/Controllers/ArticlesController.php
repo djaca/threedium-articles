@@ -23,7 +23,7 @@ class ArticlesController extends Controller
      */
     public function create()
     {
-        return view('articles.create', ['article' => new Article]);
+        return view('articles.form', ['article' => new Article]);
     }
 
     /**
@@ -49,6 +49,6 @@ class ArticlesController extends Controller
     {
         $this->authorize('update', $article);
 
-        return view('articles.create', ['article' => $article]);
+        return view('articles.form', ['article' => $article]);
     }
 }
