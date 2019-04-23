@@ -2,32 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Article;
 use App\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UpdateArticleTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected $user;
-
-    protected $article;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->user = factory(User::class)->create();
-
-        $this->article = factory(Article::class)->create([
-            'author_id' => $this->user->id
-        ]);
-    }
-
     /** @test */
     public function unauthorized_user_may_not_update_article()
     {
@@ -64,7 +45,7 @@ class UpdateArticleTest extends TestCase
     }
 
     /** @test */
-    public function it_requires_an_subtitle()
+    public function it_requires_a_subtitle()
     {
         $this->updateArticle(['subtitle' => null])
              ->assertJsonStructure(['errors' => ['subtitle']])
@@ -74,8 +55,6 @@ class UpdateArticleTest extends TestCase
     /** @test */
     public function article_can_be_updated_by_its_author()
     {
-        Storage::fake('images');
-
         $oldMainImage = UploadedFile::fake()->image('image.jpg')->storeAs('', 'image.jpg');
 
         $data = [
@@ -94,10 +73,10 @@ class UpdateArticleTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('articles', [
-            'title'     => $data['title'],
-            'body'      => $data['body'],
-            'subtitle'   => $data['subtitle'],
-            'image'     => $mainImage->hashName()
+            'title'    => $data['title'],
+            'body'     => $data['body'],
+            'subtitle' => $data['subtitle'],
+            'image'    => $mainImage->hashName()
         ]);
 
         Storage::assertExists($mainImage->hashName());

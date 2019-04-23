@@ -2,27 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class WysiwygImageHandleTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected $user;
-
     protected $image;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        Storage::fake('images');
-
-        $this->user = factory(User::class)->create();
 
         $this->image = UploadedFile::fake()->image('image.jpg');
     }

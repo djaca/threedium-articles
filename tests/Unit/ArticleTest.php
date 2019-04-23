@@ -6,11 +6,10 @@ use App\Article;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     /** @test */
     public function it_has_all_fields()
@@ -18,7 +17,7 @@ class ArticleTest extends TestCase
         $article = factory(Article::class)->create([
             'title'     => 'New article',
             'body'      => 'Body of the article',
-            'subtitle'   => 'Excerpt of the article',
+            'subtitle'  => 'Excerpt of the article',
             'author_id' => factory(User::class)->create()->id,
             'image'     => 'image.jpg'
         ]);

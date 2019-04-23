@@ -3,27 +3,12 @@
 namespace Tests\Feature;
 
 use App\Article;
-use App\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateArticleTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected $user;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Storage::fake('images');
-
-        $this->user = factory(User::class)->create();
-    }
-
     /** @test */
     public function unauthenticated_user_may_not_create_article()
     {
@@ -40,12 +25,8 @@ class CreateArticleTest extends TestCase
              ->assertJsonStructure(['errors' => ['title']])
              ->assertStatus(422);
 
-        $article = factory(Article::class)->create([
-            'image' => UploadedFile::fake()->image('image.jpg')
-        ]);
-
         $this->actingAs($this->user)
-             ->json('POST', route('articles.store'), ['title' => $article->title])
+             ->json('POST', route('articles.store'), ['title' => $this->article->title])
              ->assertJsonStructure(['errors' => ['title']])
              ->assertStatus(422);
     }
@@ -74,7 +55,7 @@ class CreateArticleTest extends TestCase
     }
 
     /** @test */
-    public function it_requires_an_subtitle()
+    public function it_requires_a_subtitle()
     {
         $this->actingAs($this->user)
              ->json('POST', route('articles.store'), ['subtitle' => null])
@@ -86,10 +67,10 @@ class CreateArticleTest extends TestCase
     public function authenticated_can_create_article()
     {
         $data = [
-            'title'   => 'New article',
-            'body'    => 'Article body',
+            'title'    => 'New article',
+            'body'     => 'Article body',
             'subtitle' => 'Article subtitle',
-            'image'   => $file = UploadedFile::fake()->image('image.jpg')
+            'image'    => $file = UploadedFile::fake()->image('image.jpg')
         ];
 
         $this->actingAs($this->user)
@@ -97,13 +78,15 @@ class CreateArticleTest extends TestCase
              ->assertJson([
                  'status'  => 'success',
                  'message' => 'Article created successfully',
-                 'article' => ['title' => $data['title']]
+                 'article' => [
+                     'title' => $data['title']
+                 ]
              ]);
 
         $this->assertDatabaseHas('articles', [
             'title'     => $data['title'],
             'body'      => $data['body'],
-            'subtitle'   => $data['subtitle'],
+            'subtitle'  => $data['subtitle'],
             'author_id' => $this->user->id,
             'image'     => $file->hashName()
         ]);
