@@ -40,11 +40,15 @@ class ArticlesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Article $article
+     * @param Article $article
+     *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Article $article)
     {
+        $this->authorize('update', $article);
+
         return view('articles.create', ['article' => $article]);
     }
 }
