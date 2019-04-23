@@ -27,7 +27,6 @@ Route::group(['namespace' => 'Auth'], function () {
 });
 
 Route::get('articles', 'ArticlesController@index');
-Route::get('articles/{article}', 'ArticlesController@show')->name('articles.show');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('articles/create', 'ArticlesController@create')->name('articles.create');
@@ -35,6 +34,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('my-articles', 'AuthorController@articles');
 
 });
+
+Route::get('articles/{article}', 'ArticlesController@show')->name('articles.show');
 
 // API
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
