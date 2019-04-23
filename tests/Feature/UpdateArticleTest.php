@@ -64,10 +64,10 @@ class UpdateArticleTest extends TestCase
     }
 
     /** @test */
-    public function it_requires_an_excerpt()
+    public function it_requires_an_subtitle()
     {
-        $this->updateArticle(['excerpt' => null])
-             ->assertJsonStructure(['errors' => ['excerpt']])
+        $this->updateArticle(['subtitle' => null])
+             ->assertJsonStructure(['errors' => ['subtitle']])
              ->assertStatus(422);
     }
 
@@ -81,7 +81,7 @@ class UpdateArticleTest extends TestCase
         $data = [
             'title'   => 'Updated Article',
             'body'    => 'updated body',
-            'excerpt' => 'updated excerpt',
+            'subtitle' => 'updated subtitle',
             'image'   => $mainImage = UploadedFile::fake()->image('image.jpg')
         ];
 
@@ -96,7 +96,7 @@ class UpdateArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title'     => $data['title'],
             'body'      => $data['body'],
-            'excerpt'   => $data['excerpt'],
+            'subtitle'   => $data['subtitle'],
             'image'     => $mainImage->hashName()
         ]);
 

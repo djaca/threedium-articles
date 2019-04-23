@@ -11,7 +11,7 @@ $factory->define(App\Article::class, function (Faker $faker) {
     return [
         'title'     => $faker->words(2, true),
         'body'      => $faker->realText(2000),
-        'excerpt'   => $faker->text(100),
+        'subtitle'   => $faker->text(400),
         'author_id' => function () {
             return factory(User::class)->create()->id;
         },

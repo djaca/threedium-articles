@@ -38,7 +38,7 @@ class ArticlesController extends Controller
         $request->validate([
             'title'   => 'required|unique:articles,title',
             'body'    => 'required',
-            'excerpt' => 'required',
+            'subtitle' => 'required',
             'image'   => 'required|image'
         ]);
 
@@ -47,7 +47,7 @@ class ArticlesController extends Controller
                            ->create([
                                'title'   => $request->title,
                                'body'    => $request->body,
-                               'excerpt' => $request->excerpt,
+                               'subtitle' => $request->subtitle,
                                'image'   => $this->handleImage(request()->file('image'))
                            ]);
 
@@ -75,11 +75,11 @@ class ArticlesController extends Controller
         $request->validate([
             'title'   => 'required|unique:articles,title,' . $article->id,
             'body'    => 'required',
-            'excerpt' => 'required',
+            'subtitle' => 'required',
             'image'   => 'nullable|image'
         ]);
 
-        $article->update($request->only(['title', 'body', 'excerpt']));
+        $article->update($request->only(['title', 'body', 'subtitle']));
 
         if ($request->hasFile('image')) {
             Storage::delete($article->getOriginal('image'));

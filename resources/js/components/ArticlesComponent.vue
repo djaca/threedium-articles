@@ -16,7 +16,7 @@
           >
           </div>
 
-          <div v-html="article.excerpt" class="my-2"></div>
+          <div v-html="article.subtitle" class="my-2"></div>
 
           <hr v-if="index !== articles.length - 1">
         </div>

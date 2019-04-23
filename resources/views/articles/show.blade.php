@@ -11,7 +11,7 @@
             <div class="text-center">
               <h1 class="card-title display-4">{{ $article->title }}</h1>
               <h4 class="card-subtitle mb-3">
-                {{ $article->excerpt }}
+                {{ $article->subtitle }}
               </h4>
 
               <h5><a href="/articles?author={{ $article->author->id  }}">{{ $article->author->name }}</a> - {{ $article->created_at }}</h5>

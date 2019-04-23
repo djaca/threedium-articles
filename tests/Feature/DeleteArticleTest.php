@@ -42,7 +42,7 @@ class DeleteArticleTest extends TestCase
         $this->assertDatabaseMissing('articles', [
             'title'     => $article->title,
             'body'      => $article->body,
-            'excerpt'   => $article->excerpt,
+            'subtitle'   => $article->subtitle,
             'author_id' => $user->id,
             'image'     => $article->getOriginal('image')
         ]);

@@ -1844,7 +1844,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       title: this.article.title || '',
       body: this.article.body || '',
-      excerpt: this.article.excerpt || '',
+      subtitle: this.article.subtitle || '',
       img: '',
       errors: {}
     };
@@ -1871,7 +1871,7 @@ __webpack_require__.r(__webpack_exports__);
       var formData = new FormData();
       formData.append('title', this.title);
       formData.append('body', this.body);
-      formData.append('excerpt', this.excerpt);
+      formData.append('subtitle', this.subtitle);
       formData.append('image', this.img);
 
       if (this.isEditing) {
@@ -48578,29 +48578,29 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "excerpt" } }, [_vm._v("Excerpt")]),
+        _c("label", { attrs: { for: "subtitle" } }, [_vm._v("Excerpt")]),
         _vm._v(" "),
         _c("textarea", {
           directives: [
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.excerpt,
-              expression: "excerpt"
+              value: _vm.subtitle,
+              expression: "subtitle"
             }
           ],
           class: [
             "form-control",
-            { "is-invalid": _vm.errors.hasOwnProperty("excerpt") }
+            { "is-invalid": _vm.errors.hasOwnProperty("subtitle") }
           ],
-          attrs: { id: "excerpt", rows: "5" },
-          domProps: { value: _vm.excerpt },
+          attrs: { id: "subtitle", rows: "5" },
+          domProps: { value: _vm.subtitle },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.excerpt = $event.target.value
+              _vm.subtitle = $event.target.value
             }
           }
         }),
@@ -48725,7 +48725,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("div", {
                       staticClass: "my-2",
-                      domProps: { innerHTML: _vm._s(article.excerpt) }
+                      domProps: { innerHTML: _vm._s(article.subtitle) }
                     }),
                     _vm._v(" "),
                     index !== _vm.articles.length - 1 ? _c("hr") : _vm._e()

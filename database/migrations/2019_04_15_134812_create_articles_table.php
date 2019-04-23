@@ -18,7 +18,7 @@ class CreateArticlesTable extends Migration
             $table->integer('author_id')->unsigned();
             $table->string('title')->unique()->index();
             $table->longText('body');
-            $table->text('excerpt');
+            $table->text('subtitle');
             $table->string('image');
             $table->timestamps();
         });

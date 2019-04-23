@@ -35,11 +35,11 @@
     </div>
 
     <div class="form-group">
-      <label for="excerpt">Excerpt</label>
+      <label for="subtitle">Excerpt</label>
       <textarea
-        v-model="excerpt"
-        :class="['form-control', { 'is-invalid': errors.hasOwnProperty('excerpt') }]"
-        id="excerpt"
+        v-model="subtitle"
+        :class="['form-control', { 'is-invalid': errors.hasOwnProperty('subtitle') }]"
+        id="subtitle"
         rows="5"></textarea>
 
       <span class="invalid-feedback" v-if="errors.hasOwnProperty('body')">
@@ -82,7 +82,7 @@
       return {
         title: this.article.title || '',
         body: this.article.body || '',
-        excerpt: this.article.excerpt || '',
+        subtitle: this.article.subtitle || '',
         img: '',
         errors: {}
       }
@@ -114,7 +114,7 @@
 
         formData.append('title', this.title)
         formData.append('body', this.body)
-        formData.append('excerpt', this.excerpt)
+        formData.append('subtitle', this.subtitle)
         formData.append('image', this.img)
 
         if (this.isEditing) {

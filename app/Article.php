@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 
 class Article extends Model
 {
-    protected $fillable = ['title', 'body', 'image', 'excerpt'];
+    protected $fillable = ['title', 'body', 'image', 'subtitle'];
 
     public function author()
     {

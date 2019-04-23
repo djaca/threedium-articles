@@ -74,11 +74,11 @@ class CreateArticleTest extends TestCase
     }
 
     /** @test */
-    public function it_requires_an_excerpt()
+    public function it_requires_an_subtitle()
     {
         $this->actingAs($this->user)
-             ->json('POST', route('articles.store'), ['excerpt' => null])
-             ->assertJsonStructure(['errors' => ['excerpt']])
+             ->json('POST', route('articles.store'), ['subtitle' => null])
+             ->assertJsonStructure(['errors' => ['subtitle']])
              ->assertStatus(422);
     }
 
@@ -88,7 +88,7 @@ class CreateArticleTest extends TestCase
         $data = [
             'title'   => 'New article',
             'body'    => 'Article body',
-            'excerpt' => 'Article excerpt',
+            'subtitle' => 'Article subtitle',
             'image'   => $file = UploadedFile::fake()->image('image.jpg')
         ];
 
@@ -103,7 +103,7 @@ class CreateArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title'     => $data['title'],
             'body'      => $data['body'],
-            'excerpt'   => $data['excerpt'],
+            'subtitle'   => $data['subtitle'],
             'author_id' => $this->user->id,
             'image'     => $file->hashName()
         ]);
