@@ -42,18 +42,19 @@ class ArticlesController extends Controller
             'image'   => 'required|image'
         ]);
 
-        $request->user()
-                ->articles()
-                ->create([
-                    'title'   => $request->title,
-                    'body'    => $request->body,
-                    'excerpt' => $request->excerpt,
-                    'image'   => $this->handleImage(request()->file('image'))
-                ]);
+        $article = $request->user()
+                           ->articles()
+                           ->create([
+                               'title'   => $request->title,
+                               'body'    => $request->body,
+                               'excerpt' => $request->excerpt,
+                               'image'   => $this->handleImage(request()->file('image'))
+                           ]);
 
         return response()->json([
             'status'  => 'success',
-            'message' => 'Article created successfully'
+            'message' => 'Article created successfully',
+            'article' => $article
         ]);
     }
 

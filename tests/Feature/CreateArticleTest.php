@@ -85,22 +85,25 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function authenticated_can_create_article()
     {
+        $data = [
+            'title'   => 'New article',
+            'body'    => 'Article body',
+            'excerpt' => 'Article excerpt',
+            'image'   => $file = UploadedFile::fake()->image('image.jpg')
+        ];
+
         $this->actingAs($this->user)
-             ->json('POST', route('articles.store'), [
-                 'title'   => 'New article',
-                 'body'    => 'Article body',
-                 'excerpt' => 'Article excerpt',
-                 'image'   => $file = UploadedFile::fake()->image('image.jpg')
-             ])
+             ->json('POST', route('articles.store'), $data)
              ->assertJson([
                  'status'  => 'success',
-                 'message' => 'Article created successfully'
+                 'message' => 'Article created successfully',
+                 'article' => ['title' => $data['title']]
              ]);
 
         $this->assertDatabaseHas('articles', [
-            'title'     => 'New article',
-            'body'      => 'Article body',
-            'excerpt'   => 'Article excerpt',
+            'title'     => $data['title'],
+            'body'      => $data['body'],
+            'excerpt'   => $data['excerpt'],
             'author_id' => $this->user->id,
             'image'     => $file->hashName()
         ]);

@@ -140,11 +140,7 @@
             flash(data.message, data.status)
 
             if (!this.isEditing) {
-              this.errors = {}
-              this.title = ''
-              this.body = ''
-              this.excerpt = ''
-              this.img = null
+              window.location.href = `/articles/${data.article.id}`
             }
           })
           .catch(({ response }) => {

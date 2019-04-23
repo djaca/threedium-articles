@@ -1896,11 +1896,7 @@ __webpack_require__.r(__webpack_exports__);
         flash(data.message, data.status);
 
         if (!_this.isEditing) {
-          _this.errors = {};
-          _this.title = '';
-          _this.body = '';
-          _this.excerpt = '';
-          _this.img = null;
+          window.location.href = "/articles/".concat(data.article.id);
         }
       })["catch"](function (_ref2) {
         var response = _ref2.response;
