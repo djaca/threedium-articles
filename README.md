@@ -22,3 +22,8 @@ yarn dev
 ### Step 2
 
 Next, boot up a server and visit site. If using a tool like Laravel Valet, of course the URL will default to `http://threedium-articles.test`. 
+
+## Test
+```
+vendor/bin/phpunit
+```
