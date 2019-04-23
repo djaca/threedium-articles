@@ -48,9 +48,10 @@
     </div>
 
     <wysiwyg
-      :content="body"
-      @text-changed="updateBody"
-      :error="errors.hasOwnProperty('body') ? errors['body'][0] : null"
+      class="form-control"
+      name="editor"
+      v-model="body"
+      @change="updateBody"
     />
 
     <div class="form-group row mb-0 mt-4">
@@ -79,9 +80,9 @@
 
     data () {
       return {
-        title: '',
-        body: '',
-        excerpt: '',
+        title: this.article.title || '',
+        body: this.article.body || '',
+        excerpt: this.article.excerpt || '',
         img: '',
         errors: {}
       }
@@ -94,14 +95,6 @@
 
       imgName () {
         return this.img ? this.img.name : 'Choose file'
-      }
-    },
-
-    mounted () {
-      if (this.isEditing) {
-        this.title = this.article.title
-        this.excerpt = this.article.excerpt
-        this.body = this.article.body
       }
     },
 

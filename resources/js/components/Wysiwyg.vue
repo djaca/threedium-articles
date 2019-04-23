@@ -1,132 +1,83 @@
 <template>
-  <div class="form-group">
-    <vue-editor
-      ref="quill"
-      v-model="body"
-      :class="{ 'is-invalid': error }"
-      useCustomImageHandler
-      @imageAdded="handleImageAdded"
-      @text-change="handleTextChanged"
-      :customModules="customModulesForEditor"
-      :editorOptions="editorSettings"
-    />
-
-    <span
-      :class="['invalid-feedback', { 'd-block': error }]"
-      v-if="error"
-      v-text="error"
-    ></span>
-  </div>
+  <textarea :name="name"></textarea>
 </template>
 
 <script>
-  import { VueEditor, Quill } from 'vue2-editor'
-  import ImageResize from 'quill-image-resize-module'
-
-  let Image = Quill.import('formats/image');
-  Image.className = 'img-fluid';
-  Quill.register(Image, true);
+  import summernote from 'summernote/dist/summernote-bs4.min'
 
   export default {
     name: 'Wysiwyg',
 
-    components: { VueEditor },
+    props: {
+      value: {
+        required: true,
+      },
 
-    props: ['content', 'error'],
+      name: {
+        type: String,
+        required: true,
+      },
 
-    data () {
-      return {
-        body: this.content,
-        images: [],
-        customModulesForEditor: [
-          { alias: 'imageResize', module: ImageResize }
-        ],
-        editorSettings: {
-          modules: {
-            imageResize: {}
-          }
-        }
+      height: {
+        type: String,
+        default: '500'
       }
     },
 
-    computed: {
-      bodyIsEmpty () {
-        return this.body === ''
-      }
+    mounted() {
+      let config = {
+        height: this.height,
+        codemirror: { // codemirror options
+          theme: 'monokai'
+        }
+      };
+
+      let vm = this;
+
+      config.callbacks = {
+        onInit: function () {
+          $(vm.$el).summernote("code", vm.value);
+        },
+        onChange: function (contents) {
+          vm.$emit('input', $(vm.$el).summernote('code'));
+        },
+        onBlur: function () {
+          vm.$emit('input', $(vm.$el).summernote('code'));
+        },
+        onImageUpload: function(files, ) {
+          vm.sendFile(files[0], $(this));
+        },
+        onMediaDelete : function($target) {
+          $target.remove();
+
+          let name = [/[^/]*$/.exec($target[0].src)[0]]
+
+          axios.delete('/api/image-delete', { data: { name } })
+        }
+      };
+
+      $(this.$el).summernote(config);
     },
 
     methods: {
-      handleTextChanged (delta, oldDelta, source) {
-        this.$emit('text-changed', this.body)
+      sendFile (file, editor) {
+        let data = new FormData();
+        data.append("image", file);
 
-        this.handleImageDelete(oldDelta)
-      },
-
-      handleImageDelete (oldDelta) {
-        if (this.images.length === 0) { return }
-
-        let data = this.$refs.quill.quill.getContents().diff(oldDelta).ops[0].insert
-
-        if (data && data.hasOwnProperty('image')) {
-          let imageName = /[^/]*$/.exec(data.image)[0]
-
-          this.images.splice(this.images.indexOf(imageName), 1)
-
-          this.deleteImageRemote(imageName)
-        }
-      },
-
-      deleteImageRemote (data) {
-        let name = typeof data === 'string' ? [data] : data
-
-        axios.delete('/api/image-delete', { data: { name } })
-      },
-
-      handleImageAdded (file, Editor, cursorLocation, resetUploader) {
-        let formData = new FormData();
-
-        formData.append('image', file)
-
-        axios.post('/api/image-upload', formData)
+        axios.post('/api/image-upload', data)
           .then((result) => {
             let url = '/storage/images/' + result.data
 
-            Editor.insertEmbed(cursorLocation, 'image', url)
-
-            resetUploader()
-
-            this.images.push(result.data)
+            editor.summernote('insertImage', url);
           })
           .catch((err) => {
             console.log(err)
           })
       }
-    },
-
-    mounted () {
-      this.$watch('content', val => {
-        this.body = val
-
-        if (this.bodyIsEmpty) {
-          this.images = []
-        }
-      })
-
-      window.addEventListener('beforeunload', () => {
-        if (this.images.length > 0) {
-          this.deleteImageRemote(this.images)
-        }
-      }, false)
     }
   }
 </script>
 
 <style scoped>
-  .quillWrapper.is-invalid {
-    border: 1px solid #e3342f;
-  }
-
-  #quill-container {
-    height: 400px;
-  }
+  @import "~summernote/dist/summernote-bs4.css";
 </style>

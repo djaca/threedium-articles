@@ -24,9 +24,9 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "quill-image-resize-module": "https://github.com/khasburrahman/quill-image-resize-module-fix-imports-error.git",
+        "codemirror": "^5.46.0",
+        "summernote": "^0.8.11",
         "vue-spinner": "^1.0.3",
-        "vue2-editor": "^2.6.6",
         "vuejs-paginate": "^2.1.0"
     }
 }
