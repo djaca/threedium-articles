@@ -38,9 +38,13 @@
       <label for="excerpt">Excerpt</label>
       <textarea
         v-model="excerpt"
-        class="form-control"
+        :class="['form-control', { 'is-invalid': errors.hasOwnProperty('excerpt') }]"
         id="excerpt"
         rows="5"></textarea>
+
+      <span class="invalid-feedback" v-if="errors.hasOwnProperty('body')">
+          {{ errors['body'][0] }}
+        </span>
     </div>
 
     <wysiwyg
@@ -120,7 +124,14 @@
         formData.append('excerpt', this.excerpt)
         formData.append('image', this.img)
 
-        axios.post('/api/articles', formData, {
+        if (this.isEditing) {
+          formData.append('_method', 'PATCH')
+        }
+
+        axios({
+          data: formData,
+          method: 'POST',
+          url: this.isEditing ? `/api/articles/${this.article.id}` : '/api/articles',
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -128,11 +139,13 @@
           .then(({ data }) => {
             flash(data.message, data.status)
 
-            this.errors = {}
-            this.title = ''
-            this.body = ''
-            this.excerpt = ''
-            this.img = null
+            if (!this.isEditing) {
+              this.errors = {}
+              this.title = ''
+              this.body = ''
+              this.excerpt = ''
+              this.img = null
+            }
           })
           .catch(({ response }) => {
             if (response.status === 422) {

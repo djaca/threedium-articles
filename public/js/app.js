@@ -1829,6 +1829,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1875,18 +1879,29 @@ __webpack_require__.r(__webpack_exports__);
       formData.append('body', this.body);
       formData.append('excerpt', this.excerpt);
       formData.append('image', this.img);
-      axios.post('/api/articles', formData, {
+
+      if (this.isEditing) {
+        formData.append('_method', 'PATCH');
+      }
+
+      axios({
+        data: formData,
+        method: 'POST',
+        url: this.isEditing ? "/api/articles/".concat(this.article.id) : '/api/articles',
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }).then(function (_ref) {
         var data = _ref.data;
         flash(data.message, data.status);
-        _this.errors = {};
-        _this.title = '';
-        _this.body = '';
-        _this.excerpt = '';
-        _this.img = null;
+
+        if (!_this.isEditing) {
+          _this.errors = {};
+          _this.title = '';
+          _this.body = '';
+          _this.excerpt = '';
+          _this.img = null;
+        }
       })["catch"](function (_ref2) {
         var response = _ref2.response;
 
@@ -38795,7 +38810,10 @@ var render = function() {
               expression: "excerpt"
             }
           ],
-          staticClass: "form-control",
+          class: [
+            "form-control",
+            { "is-invalid": _vm.errors.hasOwnProperty("excerpt") }
+          ],
           attrs: { id: "excerpt", rows: "5" },
           domProps: { value: _vm.excerpt },
           on: {
@@ -38806,7 +38824,13 @@ var render = function() {
               _vm.excerpt = $event.target.value
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _vm.errors.hasOwnProperty("body")
+          ? _c("span", { staticClass: "invalid-feedback" }, [
+              _vm._v("\n        " + _vm._s(_vm.errors["body"][0]) + "\n      ")
+            ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _c("wysiwyg", {
